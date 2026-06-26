@@ -23,13 +23,18 @@ api.interceptors.request.use(
 );
 
 // Interceptor: trata erros globais (ex: token expirado)
+// Só redireciona para /auth se o usuário JÁ tinha um token salvo (sessão expirada).
+// Em tentativas de login, o 401 é esperado (credenciais inválidas) e não deve redirecionar.
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      const hadToken = !!localStorage.getItem('frete_token');
       localStorage.removeItem('frete_token');
       localStorage.removeItem('frete_user');
-      window.location.href = '/auth';
+      if (hadToken) {
+        window.location.href = '/auth';
+      }
     }
     return Promise.reject(error);
   }

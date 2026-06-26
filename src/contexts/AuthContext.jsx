@@ -28,6 +28,9 @@ export function AuthProvider({ children }) {
     const data = res.data;
     const receivedToken = data.token || data.access_token || data.data?.token;
     const receivedUser = data.user || data.data?.user || data.data || {};
+    if (!receivedToken) {
+      throw new Error(data.detail || data.message || 'Email ou senha inválidos.');
+    }
     setToken(receivedToken);
     setUser(receivedUser);
     localStorage.setItem('frete_token', receivedToken);

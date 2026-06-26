@@ -24,4 +24,16 @@ export const authAPI = {
    * @param {{ nome_completo, telefone, empresa, cidade, estado }} data
    */
   updateProfile: (data) => api.put('/auth/profile', data),
+
+  /**
+   * POST /api/auth/forgot-password
+   * @param {{ email: string }} data
+   */
+  forgotPassword: (data) => api.post('/auth/forgot-password', data),
+
+  /**
+   * POST /api/auth/reset-password
+   * @param {{ token: string, nova_senha: string }} data
+   */
+  resetPassword: (data) => api.post('/auth/reset-password', data),
 };

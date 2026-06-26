@@ -46,9 +46,9 @@ export default function Auth() {
       return;
     }
     setLoading(true);
-    setError('');
     try {
       await login(loginForm.email, loginForm.senha);
+      setError('');
       navigate('/dashboard');
     } catch (err) {
       const msg = err.response?.data?.detail || err.response?.data?.message || 'Email ou senha inválidos.';
@@ -151,6 +151,14 @@ export default function Auth() {
                 onChange={e => setLoginForm(f => ({ ...f, senha: e.target.value }))}
                 autoComplete="current-password"
               />
+              <div style={{ textAlign: 'right', marginTop: 6 }}>
+                <Link
+                  to="/esqueci-senha"
+                  style={{ fontSize: '0.8rem', color: 'var(--color-accent)', textDecoration: 'none', fontWeight: 500 }}
+                >
+                  Esqueci minha senha
+                </Link>
+              </div>
             </div>
             <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={loading}>
               {loading ? <><div className="spinner" />Entrando...</> : 'Entrar'}

@@ -14,6 +14,8 @@ import Planos from './pages/Planos';
 import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import Perfil from './pages/Perfil';
+import EsqueciSenha from './pages/EsqueciSenha';
+import RedefinirSenha from './pages/RedefinirSenha';
 
 function Layout({ children }) {
   return (
@@ -52,6 +54,8 @@ export default function App() {
 
           {/* Auth route (no footer on auth page) */}
           <Route path="/auth" element={<AuthLayout><Auth /></AuthLayout>} />
+          <Route path="/esqueci-senha" element={<AuthLayout><EsqueciSenha /></AuthLayout>} />
+          <Route path="/redefinir-senha" element={<AuthLayout><RedefinirSenha /></AuthLayout>} />
 
           {/* Protected routes */}
           <Route
