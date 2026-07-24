@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://freteamigo.premolexpert.com.br/api';
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://freteamigo.premolexpert.com.br/api';
 
 const api = axios.create({
   baseURL: BASE_URL,

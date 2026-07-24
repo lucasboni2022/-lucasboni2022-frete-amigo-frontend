@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { getErrorMessage } from '../utils/errorHandler';
 
 const TIPOS_PERFIL = [
   { value: 'embarcador', label: 'Embarcador (tenho cargas)' },
@@ -51,8 +52,7 @@ export default function Auth() {
       setError('');
       navigate('/dashboard');
     } catch (err) {
-      const msg = err.response?.data?.detail || err.response?.data?.message || 'Email ou senha inválidos.';
-      setError(typeof msg === 'string' ? msg : 'Erro ao entrar. Verifique suas credenciais.');
+      setError(getErrorMessage(err, 'Email ou senha inválidos.'));
     } finally {
       setLoading(false);
     }
@@ -77,8 +77,7 @@ export default function Auth() {
       setTab('entrar');
       setLoginForm({ email, senha: '' });
     } catch (err) {
-      const msg = err.response?.data?.detail || err.response?.data?.message || 'Erro ao criar conta.';
-      setError(typeof msg === 'string' ? msg : 'Erro ao criar conta. Tente novamente.');
+      setError(getErrorMessage(err, 'Erro ao criar conta. Tente novamente.'));
     } finally {
       setLoading(false);
     }
@@ -98,7 +97,7 @@ export default function Auth() {
             </svg>
           </div>
           <div>
-            <div className="auth-title">Bem-vindo ao FreteAmigo</div>
+            <div className="auth-title">Bem-vindo ao Frete Amigo</div>
             <div className="auth-subtitle">Acesse sua conta ou cadastre-se grátis.</div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { authAPI } from '../api/auth';
+import { getErrorMessage } from '../utils/errorHandler';
 
 export default function RedefinirSenha() {
   const [searchParams] = useSearchParams();
@@ -44,11 +45,7 @@ export default function RedefinirSenha() {
       await authAPI.resetPassword({ token, nova_senha: novaSenha });
       setSuccess(true);
     } catch (err) {
-      const msg =
-        err.response?.data?.detail ||
-        err.response?.data?.message ||
-        'Não foi possível redefinir a senha. O link pode ter expirado.';
-      setError(typeof msg === 'string' ? msg : 'Erro inesperado. Tente novamente.');
+      setError(getErrorMessage(err, 'Não foi possível redefinir a senha. O link pode ter expirado.'));
     } finally {
       setLoading(false);
     }

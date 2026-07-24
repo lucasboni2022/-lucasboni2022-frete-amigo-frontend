@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authAPI } from '../api/auth';
+import { getErrorMessage } from '../utils/errorHandler';
 
 export default function EsqueciSenha() {
   const [email, setEmail] = useState('');
@@ -20,11 +21,8 @@ export default function EsqueciSenha() {
       await authAPI.forgotPassword({ email });
       setSent(true);
     } catch (err) {
-      const msg =
-        err.response?.data?.detail ||
-        err.response?.data?.message ||
-        'Não foi possível enviar o email. Tente novamente.';
-      setError(typeof msg === 'string' ? msg : 'Erro inesperado. Tente novamente.');
+      console.error('Erro ao enviar solicitação de recuperação de senha:', err, err.response?.data);
+      setError(getErrorMessage(err, 'Não foi possível enviar o email. Tente novamente.'));
     } finally {
       setLoading(false);
     }

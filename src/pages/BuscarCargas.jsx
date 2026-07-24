@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { cargasAPI } from '../api/cargas';
 import CargaCard from '../components/CargaCard';
 import { ESTADOS, VEICULOS } from '../components/SearchBar';
+import { getErrorMessage } from '../utils/errorHandler';
 
 export default function BuscarCargas() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -39,7 +40,11 @@ export default function BuscarCargas() {
       setCargas(list);
       setTotal(count);
     } catch (err) {
-      setError('Não foi possível carregar as cargas. Tente novamente.');
+      if (err.response?.status === 503) {
+        setError('O servidor de API está temporariamente indisponível (Erro 503). Tente novamente em alguns instantes.');
+      } else {
+        setError(getErrorMessage(err, 'Não foi possível carregar as cargas. Tente novamente.'));
+      }
     } finally {
       setLoading(false);
     }

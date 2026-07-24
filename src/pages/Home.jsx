@@ -90,7 +90,7 @@ export default function Home() {
       <section className="section" style={{ background: 'white' }}>
         <div className="container">
           <div className="section-header">
-            <span className="section-label">Por que usar o FreteAmigo</span>
+            <span className="section-label">Por que usar o Frete Amigo</span>
             <h2 className="section-title">Simples, rápido e gratuito</h2>
             <p className="section-desc">
               A plataforma mais fácil de conectar quem tem carga com quem tem caminhão.

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { cargasAPI } from '../api/cargas';
 import { useAuth } from '../contexts/AuthContext';
+import { getErrorMessage } from '../utils/errorHandler';
 
 function formatCurrency(val) {
   if (!val && val !== 0) return '—';
@@ -35,8 +36,8 @@ export default function CargaDetalhe() {
         const res = await cargasAPI.getById(id);
         const data = res.data;
         setCarga(data.carga || data.data || data);
-      } catch {
-        setError('Carga não encontrada.');
+      } catch (err) {
+        setError(getErrorMessage(err, 'Carga não encontrada.'));
       } finally {
         setLoading(false);
       }
@@ -50,8 +51,8 @@ export default function CargaDetalhe() {
     try {
       await cargasAPI.delete(id);
       navigate('/dashboard');
-    } catch {
-      alert('Erro ao excluir carga.');
+    } catch (err) {
+      alert(getErrorMessage(err, 'Erro ao excluir carga.'));
       setDeleting(false);
     }
   };

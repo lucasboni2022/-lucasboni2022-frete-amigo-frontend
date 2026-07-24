@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { cargasAPI } from '../api/cargas';
 import { useAuth } from '../contexts/AuthContext';
 import CargaCard from '../components/CargaCard';
+import { getErrorMessage } from '../utils/errorHandler';
 
 function getInitials(name) {
   if (!name) return 'U';
@@ -34,7 +35,7 @@ export default function Dashboard() {
       const data = res.data;
       setCargas(Array.isArray(data) ? data : (data.cargas || data.data || data.items || []));
     } catch (err) {
-      setError('Não foi possível carregar suas cargas.');
+      setError(getErrorMessage(err, 'Não foi possível carregar suas cargas.'));
     } finally {
       setLoading(false);
     }
@@ -50,8 +51,8 @@ export default function Dashboard() {
     try {
       await cargasAPI.delete(id);
       setCargas(cs => cs.filter(c => c.id !== id));
-    } catch {
-      alert('Erro ao excluir carga.');
+    } catch (err) {
+      alert(getErrorMessage(err, 'Erro ao excluir carga.'));
     }
   };
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { authAPI } from '../api/auth';
 import { ESTADOS } from '../components/SearchBar';
+import { getErrorMessage } from '../utils/errorHandler';
 
 export default function Perfil() {
   const { user, updateUser } = useAuth();
@@ -48,8 +49,7 @@ export default function Perfil() {
       updateUser({ ...form, ...updatedData });
       setSuccess('Perfil atualizado com sucesso!');
     } catch (err) {
-      const msg = err.response?.data?.detail || err.response?.data?.message || 'Erro ao atualizar perfil.';
-      setError(typeof msg === 'string' ? msg : 'Erro ao atualizar perfil.');
+      setError(getErrorMessage(err, 'Erro ao atualizar perfil.'));
     } finally {
       setLoading(false);
     }

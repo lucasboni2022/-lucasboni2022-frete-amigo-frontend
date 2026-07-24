@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { cargasAPI } from '../api/cargas';
 import { ESTADOS, VEICULOS } from '../components/SearchBar';
+import { getErrorMessage } from '../utils/errorHandler';
 
 const TIPOS_CARGA = [
   'Eletrônicos', 'Alimentos', 'Bebidas', 'Madeira', 'Construção',
@@ -106,8 +107,7 @@ export default function PublicarCarga() {
       setSuccess(true);
       setTimeout(() => navigate('/dashboard'), 2000);
     } catch (err) {
-      const msg = err.response?.data?.detail || err.response?.data?.message || 'Erro ao salvar carga. Tente novamente.';
-      setApiError(typeof msg === 'string' ? msg : JSON.stringify(msg));
+      setApiError(getErrorMessage(err, 'Erro ao salvar carga. Tente novamente.'));
     } finally {
       setLoading(false);
     }

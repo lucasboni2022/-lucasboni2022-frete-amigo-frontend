@@ -88,7 +88,7 @@ export default function ComoFunciona() {
         <div className="container">
           <div className="section-header">
             <span className="section-label">Vantagens</span>
-            <h2 className="section-title">Por que usar o FreteAmigo?</h2>
+            <h2 className="section-title">Por que usar o Frete Amigo?</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>
             {[

@@ -16,7 +16,7 @@ export default function Footer() {
                 <circle cx="5.5" cy="18.5" r="2.5"/>
                 <circle cx="18.5" cy="18.5" r="2.5"/>
               </svg>
-              FreteAmigo
+              Frete Amigo
             </div>
             <p className="footer-tagline">
               Conectamos embarcadores e caminhoneiros em todo o Brasil. A plataforma de fretes mais fácil e segura do país.
@@ -78,7 +78,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <span>© {year} FreteAmigo. Todos os direitos reservados.</span>
+          <span>© {year} Frete Amigo. Todos os direitos reservados.</span>
           <span>Feito com ❤️ para os caminhoneiros do Brasil 🇧🇷</span>
         </div>
       </div>

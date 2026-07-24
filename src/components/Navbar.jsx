@@ -62,7 +62,7 @@ export default function Navbar() {
           <div className="navbar-logo-icon">
             <TruckIcon />
           </div>
-          FreteAmigo
+          Frete Amigo
         </Link>
 
         {/* Nav Links */}
