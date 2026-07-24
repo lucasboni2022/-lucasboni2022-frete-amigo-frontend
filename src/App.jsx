@@ -56,6 +56,7 @@ export default function App() {
           <Route path="/auth" element={<AuthLayout><Auth /></AuthLayout>} />
           <Route path="/esqueci-senha" element={<AuthLayout><EsqueciSenha /></AuthLayout>} />
           <Route path="/redefinir-senha" element={<AuthLayout><RedefinirSenha /></AuthLayout>} />
+          <Route path="/reset-password" element={<AuthLayout><RedefinirSenha /></AuthLayout>} />
 
           {/* Protected routes */}
           <Route
