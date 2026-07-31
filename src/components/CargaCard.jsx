@@ -14,12 +14,14 @@ function formatDate(dateStr) {
   }
 }
 
-function getStatusClass(status) {
-  if (!status) return 'badge-inactive';
-  const s = status.toLowerCase();
-  if (s === 'ativa' || s === 'ativo' || s === 'active') return 'badge-active';
-  if (s === 'negociando') return 'badge-pending';
-  return 'badge-inactive';
+const STATUS_CONFIG = {
+  aguardando_motorista: { label: '🟡 Aguardando Motorista', cls: 'badge-pending' },
+  contato_liberado:     { label: '🟢 Contato Liberado',     cls: 'badge-active'  },
+  finalizada:           { label: '⚫ Finalizada',            cls: 'badge-inactive'},
+};
+
+function getStatusConfig(status) {
+  return STATUS_CONFIG[status] || { label: status || 'Desconhecido', cls: 'badge-inactive' };
 }
 
 export default function CargaCard({ carga }) {
@@ -32,8 +34,10 @@ export default function CargaCard({ carga }) {
     tipo_veiculo,
     peso_kg,
     valor_frete,
-    status = 'ativa',
+    status = 'aguardando_motorista',
   } = carga;
+
+  const statusCfg = getStatusConfig(status);
 
   return (
     <Link to={`/cargas/${id}`} className="carga-card animate-fade-in">
@@ -55,7 +59,7 @@ export default function CargaCard({ carga }) {
             {destino_cidade}/{destino_estado}
           </div>
         </div>
-        <span className={`badge ${getStatusClass(status)}`}>{status}</span>
+        <span className={`badge ${statusCfg.cls}`}>{statusCfg.label}</span>
       </div>
 
       <div className="carga-meta">

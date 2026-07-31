@@ -36,4 +36,10 @@ export const authAPI = {
    * @param {{ token: string, nova_senha: string }} data
    */
   resetPassword: (data) => api.post('/auth/reset-password', data),
+
+  /**
+   * GET /api/auth/subscription-status
+   * Retorna o status da assinatura do usuário (verificado via webhook Hotmart)
+   */
+  getSubscriptionStatus: () => api.get('/auth/subscription-status'),
 };

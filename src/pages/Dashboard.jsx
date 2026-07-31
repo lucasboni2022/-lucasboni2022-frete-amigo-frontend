@@ -12,8 +12,8 @@ function getInitials(name) {
 
 function getStatusClass(status) {
   const s = (status || '').toLowerCase();
-  if (s === 'ativa' || s === 'ativo') return 'badge-active';
-  if (s === 'negociando') return 'badge-pending';
+  if (s === 'aguardando_motorista') return 'badge-pending';
+  if (s === 'contato_liberado') return 'badge-active';
   return 'badge-inactive';
 }
 
@@ -58,8 +58,9 @@ export default function Dashboard() {
 
   const stats = {
     total: cargas.length,
-    ativas: cargas.filter(c => (c.status || '').toLowerCase() === 'ativa').length,
-    negociando: cargas.filter(c => (c.status || '').toLowerCase() === 'negociando').length,
+    aguardando: cargas.filter(c => c.status === 'aguardando_motorista').length,
+    contato_liberado: cargas.filter(c => c.status === 'contato_liberado').length,
+    finalizadas: cargas.filter(c => c.status === 'finalizada').length,
   };
 
   return (
@@ -88,9 +89,11 @@ export default function Dashboard() {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <Link to="/publicar-carga" className="btn btn-accent">
-                + Publicar Nova Carga
-              </Link>
+              {user?.tipo_perfil === 'embarcador' && (
+                <Link to="/publicar-carga" className="btn btn-accent">
+                  + Publicar Nova Carga
+                </Link>
+              )}
               <Link to="/perfil" className="btn" style={{ background: 'rgba(255,255,255,0.12)', color: 'white', border: '1.5px solid rgba(255,255,255,0.25)' }}>
                 Meu Perfil
               </Link>
@@ -103,9 +106,10 @@ export default function Dashboard() {
         {/* Stats */}
         <div className="dashboard-stats">
           {[
-            { label: 'Total de Cargas', value: stats.total, icon: '📦' },
-            { label: 'Cargas Ativas', value: stats.ativas, icon: '✅' },
-            { label: 'Em Negociação', value: stats.negociando, icon: '🤝' },
+            { label: 'Total de Cargas',       value: stats.total,            icon: '📦' },
+            { label: 'Aguardando Motorista',   value: stats.aguardando,       icon: '🟡' },
+            { label: 'Contato Liberado',       value: stats.contato_liberado, icon: '🟢' },
+            { label: 'Finalizadas',            value: stats.finalizadas,      icon: '⚫' },
           ].map(s => (
             <div key={s.label} className="stat-card">
               <div className="stat-label">{s.icon} {s.label}</div>
@@ -127,9 +131,9 @@ export default function Dashboard() {
               onChange={e => setStatusFilter(e.target.value)}
             >
               <option value="">Todos os status</option>
-              <option value="ativa">Ativas</option>
-              <option value="negociando">Em negociação</option>
-              <option value="concluida">Concluídas</option>
+              <option value="aguardando_motorista">🟡 Aguardando Motorista</option>
+              <option value="contato_liberado">🟢 Contato Liberado</option>
+              <option value="finalizada">⚫ Finalizada</option>
             </select>
           </div>
         </div>
@@ -156,33 +160,35 @@ export default function Dashboard() {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {cargas.map((carga) => (
+              {cargas.map((carga) => (
               <div key={carga.id} style={{ position: 'relative' }}>
                 <CargaCard carga={carga} />
-                {/* Quick actions overlay */}
-                <div style={{
-                  position: 'absolute',
-                  bottom: 20,
-                  right: 24,
-                  display: 'flex',
-                  gap: 8,
-                }}>
-                  <Link
-                    to={`/cargas/${carga.id}/editar`}
-                    className="btn btn-sm btn-outline"
-                    style={{ fontSize: '0.8125rem', padding: '5px 12px' }}
-                    onClick={e => e.stopPropagation()}
-                  >
-                    ✏️ Editar
-                  </Link>
-                  <button
-                    className="btn btn-sm"
-                    style={{ fontSize: '0.8125rem', padding: '5px 12px', background: '#fef2f2', color: 'var(--color-error)', border: '1.5px solid #fecaca' }}
-                    onClick={(e) => handleDelete(carga.id, e)}
-                  >
-                    🗑️
-                  </button>
-                </div>
+                {/* Ações disponíveis apenas se carga ainda está aguardando motorista */}
+                {carga.status === 'aguardando_motorista' && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 20,
+                    right: 24,
+                    display: 'flex',
+                    gap: 8,
+                  }}>
+                    <Link
+                      to={`/cargas/${carga.id}/editar`}
+                      className="btn btn-sm btn-outline"
+                      style={{ fontSize: '0.8125rem', padding: '5px 12px' }}
+                      onClick={e => e.stopPropagation()}
+                    >
+                      ✏️ Editar
+                    </Link>
+                    <button
+                      className="btn btn-sm"
+                      style={{ fontSize: '0.8125rem', padding: '5px 12px', background: '#fef2f2', color: 'var(--color-error)', border: '1.5px solid #fecaca' }}
+                      onClick={(e) => handleDelete(carga.id, e)}
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>

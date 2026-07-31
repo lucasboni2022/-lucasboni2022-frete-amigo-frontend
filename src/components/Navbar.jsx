@@ -47,9 +47,11 @@ export default function Navbar() {
     return name.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
   };
 
+  const isEmbarcador = isAuthenticated && user?.tipo_perfil === 'embarcador';
+
   const navLinks = [
     { to: '/buscar-cargas', label: 'Buscar Cargas' },
-    { to: '/publicar-carga', label: 'Publicar Carga' },
+    ...(isEmbarcador ? [{ to: '/publicar-carga', label: 'Publicar Carga' }] : []),
     { to: '/como-funciona', label: 'Como Funciona' },
     { to: '/planos', label: 'Planos' },
   ];

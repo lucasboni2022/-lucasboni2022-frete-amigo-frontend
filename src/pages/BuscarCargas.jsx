@@ -1,11 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { cargasAPI } from '../api/cargas';
+import { authAPI } from '../api/auth';
+import { useAuth } from '../contexts/AuthContext';
 import CargaCard from '../components/CargaCard';
 import { ESTADOS, VEICULOS } from '../components/SearchBar';
 import { getErrorMessage } from '../utils/errorHandler';
 
 export default function BuscarCargas() {
+  const { isAuthenticated } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [cargas, setCargas] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -13,6 +16,30 @@ export default function BuscarCargas() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const LIMIT = 10;
+
+  // Estado da assinatura Hotmart
+  const [subStatus, setSubStatus] = useState(null);
+  const [subLoading, setSubLoading] = useState(false);
+
+  const checkSubscription = useCallback(async () => {
+    if (!isAuthenticated) {
+      setSubStatus(null);
+      return;
+    }
+    setSubLoading(true);
+    try {
+      const res = await authAPI.getSubscriptionStatus();
+      setSubStatus(res.data);
+    } catch (err) {
+      console.warn('Não foi possível verificar a assinatura:', err);
+    } finally {
+      setSubLoading(false);
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    checkSubscription();
+  }, [checkSubscription]);
 
   const [filters, setFilters] = useState({
     origem: searchParams.get('origem') || '',
@@ -130,6 +157,62 @@ export default function BuscarCargas() {
             </div>
           </div>
         </div>
+
+        {/* Hotmart Subscription Status Analysis Banner */}
+        {isAuthenticated && subStatus && (
+          <div style={{
+            background: subStatus.active ? '#f0fdf4' : '#fffbeb',
+            border: `1.5px solid ${subStatus.active ? '#bbf7d0' : '#fde68a'}`,
+            borderRadius: 'var(--radius-lg)',
+            padding: '16px 20px',
+            marginBottom: 24,
+            display: 'flex',
+            alignItems: 'center',
+            justify: 'space-between',
+            flexWrap: 'wrap',
+            gap: 12
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ fontSize: '1.5rem' }}>
+                {subStatus.active ? '✅' : '💳'}
+              </div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: '0.95rem', color: subStatus.active ? '#166534' : '#92400e' }}>
+                  {subStatus.active
+                    ? `Assinatura Ativa (Hotmart: ${subStatus.status})`
+                    : `Análise de Pagamento Hotmart (${subStatus.status === 'SEM_ASSINATURA' ? 'Nenhuma assinatura encontrada' : subStatus.status})`}
+                </div>
+                <div style={{ fontSize: '0.85rem', color: subStatus.active ? '#15803d' : '#b45309', marginTop: 2 }}>
+                  {subStatus.active
+                    ? 'Seu pagamento foi confirmado via Webhook Hotmart. Acesso liberado aos contatos dos embarcadores!'
+                    : 'Ainda não consta confirmação de pagamento para o e-mail ' + subStatus.email + '. O acesso aos contatos requer plano ativo.'}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <button
+                className="btn btn-sm btn-outline"
+                style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+                onClick={checkSubscription}
+                disabled={subLoading}
+              >
+                {subLoading ? 'Verificando...' : '🔄 Reanalisar'}
+              </button>
+              {!subStatus.active && (
+                <a
+                  href="https://pay.hotmart.com/E106911485K?bid=1785524650703"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-sm btn-accent"
+                  style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+                >
+                  🛒 Assinar Agora
+                </a>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Results info */}
         {!loading && (

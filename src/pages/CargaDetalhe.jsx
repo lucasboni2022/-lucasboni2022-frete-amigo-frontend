@@ -80,8 +80,7 @@ export default function CargaDetalhe() {
     } catch (err) {
       const data = err?.response?.data;
       if (err?.response?.status === 403 && data?.plano_required) {
-        // 2. Sem plano → redireciona para Hotmart
-        window.location.href = HOTMART_CHECKOUT;
+        setContatoErro('Plano ativo na Hotmart necessário. De acordo com a análise via Webhook, seu pagamento ainda não foi confirmado ou o plano está inativo.');
       } else {
         setContatoErro(getErrorMessage(err, 'Erro ao buscar contato. Tente novamente.'));
       }
@@ -252,9 +251,29 @@ export default function CargaDetalhe() {
                 <>
                   {/* Mensagem de erro (se houver) */}
                   {contatoErro && (
-                    <p style={{ color: 'var(--color-error)', fontSize: '0.85rem', marginTop: 8, marginBottom: 4 }}>
-                      {contatoErro}
-                    </p>
+                    <div style={{
+                      background: '#fef2f2',
+                      border: '1px solid #fecaca',
+                      borderRadius: 'var(--radius-md)',
+                      padding: '12px',
+                      marginTop: 10,
+                      marginBottom: 10
+                    }}>
+                      <p style={{ color: 'var(--color-error)', fontSize: '0.83rem', margin: 0, lineHeight: 1.45 }}>
+                        {contatoErro}
+                      </p>
+                      <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
+                        <a
+                          href={HOTMART_CHECKOUT}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-sm btn-accent"
+                          style={{ fontSize: '0.78rem', flex: 1, textAlign: 'center' }}
+                        >
+                          🛒 Assinar na Hotmart
+                        </a>
+                      </div>
+                    </div>
                   )}
 
                   {/* Botão principal */}
