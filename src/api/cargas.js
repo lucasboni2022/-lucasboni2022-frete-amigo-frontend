@@ -35,4 +35,13 @@ export const cargasAPI = {
    * @param {{ status, page, limit }} params
    */
   myCargas: (params = {}) => api.get('/cargas/my-cargas/list', { params }),
+
+  /**
+   * GET /api/cargas/:id/contato
+   * Verifica plano ativo na Hotmart e retorna contato do embarcador.
+   * Requer autenticação (JWT).
+   * - 200: { contato_telefone, contato_email, embarcador_nome }
+   * - 403 + plano_required: usuário sem plano ativo
+   */
+  getContato: (id) => api.get(`/cargas/${id}/contato`),
 };
