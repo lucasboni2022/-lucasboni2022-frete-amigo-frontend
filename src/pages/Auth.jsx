@@ -8,6 +8,23 @@ const TIPOS_PERFIL = [
   { value: 'caminhoneiro', label: 'Caminhoneiro (tenho caminhão)' },
 ];
 
+function formatCPF(value) {
+  const digits = value.replace(/\D/g, '').slice(0, 11);
+  return digits
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+}
+
+function formatCNPJ(value) {
+  const digits = value.replace(/\D/g, '').slice(0, 14);
+  return digits
+    .replace(/^(\d{2})(\d)/, '$1.$2')
+    .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+    .replace(/\.(\d{3})(\d)/, '.$1/$2')
+    .replace(/(\d{4})(\d)/, '$1-$2');
+}
+
 export default function Auth() {
   const { login, register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -29,6 +46,8 @@ export default function Auth() {
     email: '',
     telefone: '',
     senha: '',
+    cpf: '',
+    cnpj: '',
   });
 
   useEffect(() => {
@@ -60,9 +79,17 @@ export default function Auth() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const { nome_completo, email, senha, telefone, tipo_perfil } = registerForm;
+    const { nome_completo, email, senha, telefone, tipo_perfil, cpf, cnpj } = registerForm;
     if (!nome_completo || !email || !senha || !tipo_perfil) {
       setError('Preencha todos os campos obrigatórios.');
+      return;
+    }
+    if (tipo_perfil === 'embarcador' && !cnpj.trim()) {
+      setError('O campo CNPJ é obrigatório para o perfil Embarcador.');
+      return;
+    }
+    if (tipo_perfil === 'caminhoneiro' && !cpf.trim()) {
+      setError('O campo CPF é obrigatório para o perfil Caminhoneiro.');
       return;
     }
     if (senha.length < 6) {
@@ -72,7 +99,15 @@ export default function Auth() {
     setLoading(true);
     setError('');
     try {
-      await register({ nome_completo, email, senha, telefone, tipo_perfil });
+      await register({
+        nome_completo,
+        email,
+        senha,
+        telefone,
+        tipo_perfil,
+        cnpj: tipo_perfil === 'embarcador' ? cnpj : undefined,
+        cpf: tipo_perfil === 'caminhoneiro' ? cpf : undefined,
+      });
       setSuccess('Conta criada com sucesso! Faça login para continuar.');
       setTab('entrar');
       setLoginForm({ email, senha: '' });
@@ -179,6 +214,35 @@ export default function Auth() {
                 {TIPOS_PERFIL.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
               </select>
             </div>
+
+            {registerForm.tipo_perfil === 'embarcador' ? (
+              <div className="form-group">
+                <label className="form-label" htmlFor="reg-cnpj">CNPJ *</label>
+                <input
+                  id="reg-cnpj"
+                  type="text"
+                  className="form-input"
+                  placeholder="00.000.000/0000-00"
+                  value={registerForm.cnpj}
+                  onChange={e => setRegisterForm(f => ({ ...f, cnpj: formatCNPJ(e.target.value) }))}
+                  maxLength={18}
+                />
+              </div>
+            ) : (
+              <div className="form-group">
+                <label className="form-label" htmlFor="reg-cpf">CPF *</label>
+                <input
+                  id="reg-cpf"
+                  type="text"
+                  className="form-input"
+                  placeholder="000.000.000-00"
+                  value={registerForm.cpf}
+                  onChange={e => setRegisterForm(f => ({ ...f, cpf: formatCPF(e.target.value) }))}
+                  maxLength={14}
+                />
+              </div>
+            )}
+
             <div className="form-group">
               <label className="form-label" htmlFor="reg-nome">Nome completo *</label>
               <input

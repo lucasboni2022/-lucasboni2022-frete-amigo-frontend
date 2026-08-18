@@ -3,7 +3,7 @@ import api from './axios';
 export const authAPI = {
   /**
    * POST /api/auth/register
-   * @param {{ email, senha, nome_completo, telefone, tipo_perfil }} data
+   * @param {{ email, senha, nome_completo, telefone, tipo_perfil, cpf, cnpj }} data
    */
   register: (data) => api.post('/auth/register', data),
 
@@ -21,7 +21,7 @@ export const authAPI = {
 
   /**
    * PUT /api/auth/profile
-   * @param {{ nome_completo, telefone, empresa, cidade, estado }} data
+   * @param {{ nome_completo, telefone, empresa, cidade, estado, cpf, cnpj }} data
    */
   updateProfile: (data) => api.put('/auth/profile', data),
 

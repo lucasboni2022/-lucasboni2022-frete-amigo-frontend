@@ -12,6 +12,8 @@ export default function Perfil() {
     empresa: '',
     cidade: '',
     estado: '',
+    cpf: '',
+    cnpj: '',
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
@@ -25,6 +27,8 @@ export default function Perfil() {
         empresa: user.empresa || '',
         cidade: user.cidade || '',
         estado: user.estado || '',
+        cpf: user.cpf || '',
+        cnpj: user.cnpj || '',
       });
     }
   }, [user]);
@@ -59,6 +63,8 @@ export default function Perfil() {
     if (!name) return 'U';
     return name.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
   }
+
+  const isEmbarcador = (user?.tipo_perfil || user?.tipo) === 'embarcador';
 
   return (
     <>
@@ -103,7 +109,7 @@ export default function Perfil() {
                 padding: '3px 10px', borderRadius: '999px',
                 fontSize: '0.8rem', fontWeight: 600,
               }}>
-                {user?.tipo_perfil === 'embarcador' ? '📦 Embarcador' : '🚛 Caminhoneiro'}
+                {isEmbarcador ? '📦 Embarcador' : '🚛 Caminhoneiro'}
               </span>
             </div>
           </div>
@@ -130,14 +136,16 @@ export default function Perfil() {
 
           <div className="form-row" style={{ marginBottom: 16 }}>
             <div className="form-group">
-              <label className="form-label" htmlFor="perfil-email">Email</label>
+              <label className="form-label" htmlFor="perfil-doc">
+                {isEmbarcador ? 'CNPJ' : 'CPF'}
+              </label>
               <input
-                id="perfil-email"
-                type="email"
+                id="perfil-doc"
+                type="text"
                 className="form-input"
-                value={user?.email || ''}
-                disabled
-                style={{ opacity: 0.6, cursor: 'not-allowed' }}
+                placeholder={isEmbarcador ? "00.000.000/0000-00" : "000.000.000-00"}
+                value={isEmbarcador ? form.cnpj : form.cpf}
+                onChange={e => handleChange(isEmbarcador ? 'cnpj' : 'cpf', e.target.value)}
               />
             </div>
             <div className="form-group">
@@ -151,6 +159,18 @@ export default function Perfil() {
                 onChange={e => handleChange('telefone', e.target.value)}
               />
             </div>
+          </div>
+
+          <div className="form-group" style={{ marginBottom: 16 }}>
+            <label className="form-label" htmlFor="perfil-email">Email</label>
+            <input
+              id="perfil-email"
+              type="email"
+              className="form-input"
+              value={user?.email || ''}
+              disabled
+              style={{ opacity: 0.6, cursor: 'not-allowed' }}
+            />
           </div>
 
           <hr className="divider" />
