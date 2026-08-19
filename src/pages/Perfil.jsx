@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { authAPI } from '../api/auth';
 import { ESTADOS } from '../components/SearchBar';
 import { getErrorMessage } from '../utils/errorHandler';
+import { validateCPF, validateCNPJ } from '../utils/validators';
 
 export default function Perfil() {
   const { user, updateUser } = useAuth();
@@ -43,6 +44,15 @@ export default function Perfil() {
     e.preventDefault();
     if (!form.nome_completo.trim()) {
       setError('O nome completo é obrigatório.');
+      return;
+    }
+    const isEmbarcador = (user?.tipo_perfil || user?.tipo) === 'embarcador';
+    if (isEmbarcador && form.cnpj && !validateCNPJ(form.cnpj)) {
+      setError('CNPJ inválido. Verifique os números digitados.');
+      return;
+    }
+    if (!isEmbarcador && form.cpf && !validateCPF(form.cpf)) {
+      setError('CPF inválido. Verifique os números digitados.');
       return;
     }
     setLoading(true);

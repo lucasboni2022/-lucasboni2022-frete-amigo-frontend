@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getErrorMessage } from '../utils/errorHandler';
+import { validateCPF, validateCNPJ } from '../utils/validators';
 
 const TIPOS_PERFIL = [
   { value: 'embarcador', label: 'Embarcador (tenho cargas)' },
@@ -84,13 +85,25 @@ export default function Auth() {
       setError('Preencha todos os campos obrigatórios.');
       return;
     }
-    if (tipo_perfil === 'embarcador' && !cnpj.trim()) {
-      setError('O campo CNPJ é obrigatório para o perfil Embarcador.');
-      return;
+    if (tipo_perfil === 'embarcador') {
+      if (!cnpj.trim()) {
+        setError('O campo CNPJ é obrigatório para o perfil Embarcador.');
+        return;
+      }
+      if (!validateCNPJ(cnpj)) {
+        setError('CNPJ inválido. Verifique os números digitados.');
+        return;
+      }
     }
-    if (tipo_perfil === 'caminhoneiro' && !cpf.trim()) {
-      setError('O campo CPF é obrigatório para o perfil Caminhoneiro.');
-      return;
+    if (tipo_perfil === 'caminhoneiro') {
+      if (!cpf.trim()) {
+        setError('O campo CPF é obrigatório para o perfil Caminhoneiro.');
+        return;
+      }
+      if (!validateCPF(cpf)) {
+        setError('CPF inválido. Verifique os números digitados.');
+        return;
+      }
     }
     if (senha.length < 6) {
       setError('A senha deve ter no mínimo 6 caracteres.');
