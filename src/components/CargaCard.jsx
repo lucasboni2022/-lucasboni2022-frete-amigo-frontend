@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 function formatCurrency(val) {
@@ -24,6 +25,34 @@ function getStatusConfig(status) {
   return STATUS_CONFIG[status] || { label: status || 'Desconhecido', cls: 'badge-inactive' };
 }
 
+function getVipTimerInfo(carga) {
+  const timeRef = carga.exclusivo_ate || carga.publicado_em || carga.criado_em || carga.created_at;
+  if (!timeRef) return null;
+
+  let targetTime;
+  if (carga.exclusivo_ate) {
+    targetTime = new Date(carga.exclusivo_ate).getTime();
+  } else {
+    targetTime = new Date(timeRef).getTime() + (3 * 3600 * 1000);
+  }
+
+  const diffMs = targetTime - Date.now();
+  if (isNaN(diffMs) || diffMs <= 0) {
+    return { isVip: false, label: '🔓 Carga Aberta (Livre)' };
+  }
+
+  const totalSecs = Math.floor(diffMs / 1000);
+  const hours = Math.floor(totalSecs / 3600);
+  const minutes = Math.floor((totalSecs % 3600) / 60);
+  const seconds = totalSecs % 60;
+  const pad = (n) => String(n).padStart(2, '0');
+
+  return {
+    isVip: true,
+    label: `⚡ Exclusivo Assinantes (${pad(hours)}h:${pad(minutes)}m:${pad(seconds)}s)`,
+  };
+}
+
 export default function CargaCard({ carga }) {
   const {
     id,
@@ -38,6 +67,19 @@ export default function CargaCard({ carga }) {
   } = carga;
 
   const statusCfg = getStatusConfig(status);
+  const [timerInfo, setTimerInfo] = useState(() => getVipTimerInfo(carga));
+
+  useEffect(() => {
+    setTimerInfo(getVipTimerInfo(carga));
+    const interval = setInterval(() => {
+      const info = getVipTimerInfo(carga);
+      setTimerInfo(info);
+      if (info && !info.isVip) {
+        clearInterval(interval);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [carga]);
 
   return (
     <Link to={`/cargas/${id}`} className="carga-card animate-fade-in">
@@ -59,7 +101,23 @@ export default function CargaCard({ carga }) {
             {destino_cidade}/{destino_estado}
           </div>
         </div>
-        <span className={`badge ${statusCfg.cls}`}>{statusCfg.label}</span>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+          {timerInfo && (
+            <span
+              className={`badge ${timerInfo.isVip ? 'badge-vip' : 'badge-public'}`}
+              style={{
+                background: timerInfo.isVip ? '#fef3c7' : '#f3f4f6',
+                color: timerInfo.isVip ? '#b45309' : '#4b5563',
+                border: timerInfo.isVip ? '1px solid #fde68a' : '1px solid #e5e7eb',
+                fontWeight: 600,
+                fontSize: '0.75rem',
+              }}
+            >
+              {timerInfo.label}
+            </span>
+          )}
+          <span className={`badge ${statusCfg.cls}`}>{statusCfg.label}</span>
+        </div>
       </div>
 
       <div className="carga-meta">

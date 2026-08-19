@@ -51,7 +51,10 @@ export default function Navbar() {
 
   const navLinks = [
     { to: '/buscar-cargas', label: 'Buscar Cargas' },
-    ...(isEmbarcador ? [{ to: '/publicar-carga', label: 'Publicar Carga' }] : []),
+    ...(isEmbarcador ? [
+      { to: '/gerenciar-cargas', label: 'Gerenciar Cargas' },
+      { to: '/publicar-carga', label: 'Publicar Carga' }
+    ] : []),
     { to: '/como-funciona', label: 'Como Funciona' },
     { to: '/planos', label: 'Planos' },
   ];
@@ -101,6 +104,12 @@ export default function Navbar() {
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                     Dashboard
                   </Link>
+                  {isEmbarcador && (
+                    <Link to="/gerenciar-cargas" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                      Gerenciar Cargas
+                    </Link>
+                  )}
                   <Link to="/perfil" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     Meu Perfil

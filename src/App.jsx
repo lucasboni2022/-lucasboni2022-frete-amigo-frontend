@@ -16,6 +16,7 @@ import Dashboard from './pages/Dashboard';
 import Perfil from './pages/Perfil';
 import EsqueciSenha from './pages/EsqueciSenha';
 import RedefinirSenha from './pages/RedefinirSenha';
+import GerenciarCargasEmbarcador from './pages/GerenciarCargasEmbarcador';
 
 function Layout({ children }) {
   return (
@@ -88,6 +89,22 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Layout><Perfil /></Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/gerenciar-cargas"
+            element={
+              <ProtectedRoute>
+                <Layout><GerenciarCargasEmbarcador /></Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/embarcador/cargas"
+            element={
+              <ProtectedRoute>
+                <Layout><GerenciarCargasEmbarcador /></Layout>
               </ProtectedRoute>
             }
           />

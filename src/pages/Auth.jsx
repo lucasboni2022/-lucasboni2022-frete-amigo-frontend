@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getErrorMessage } from '../utils/errorHandler';
 import { validateCPF, validateCNPJ } from '../utils/validators';
+import { ESTADOS } from '../components/SearchBar';
 
 const TIPOS_PERFIL = [
   { value: 'embarcador', label: 'Embarcador (tenho cargas)' },
@@ -49,6 +50,8 @@ export default function Auth() {
     senha: '',
     cpf: '',
     cnpj: '',
+    estado: '',
+    cidade: '',
   });
 
   useEffect(() => {
@@ -80,7 +83,7 @@ export default function Auth() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const { nome_completo, email, senha, telefone, tipo_perfil, cpf, cnpj } = registerForm;
+    const { nome_completo, email, senha, telefone, tipo_perfil, cpf, cnpj, estado, cidade } = registerForm;
     if (!nome_completo || !email || !senha || !tipo_perfil) {
       setError('Preencha todos os campos obrigatórios.');
       return;
@@ -104,6 +107,14 @@ export default function Auth() {
         setError('CPF inválido. Verifique os números digitados.');
         return;
       }
+      if (!estado) {
+        setError('Selecione o Estado (UF) no cadastro de motorista.');
+        return;
+      }
+      if (!cidade.trim()) {
+        setError('Informe a Cidade no cadastro de motorista.');
+        return;
+      }
     }
     if (senha.length < 6) {
       setError('A senha deve ter no mínimo 6 caracteres.');
@@ -120,6 +131,8 @@ export default function Auth() {
         tipo_perfil,
         cnpj: tipo_perfil === 'embarcador' ? cnpj : undefined,
         cpf: tipo_perfil === 'caminhoneiro' ? cpf : undefined,
+        estado: tipo_perfil === 'caminhoneiro' ? estado : registerForm.estado || undefined,
+        cidade: tipo_perfil === 'caminhoneiro' ? cidade : registerForm.cidade || undefined,
       });
       setSuccess('Conta criada com sucesso! Faça login para continuar.');
       setTab('entrar');
@@ -242,18 +255,45 @@ export default function Auth() {
                 />
               </div>
             ) : (
-              <div className="form-group">
-                <label className="form-label" htmlFor="reg-cpf">CPF *</label>
-                <input
-                  id="reg-cpf"
-                  type="text"
-                  className="form-input"
-                  placeholder="000.000.000-00"
-                  value={registerForm.cpf}
-                  onChange={e => setRegisterForm(f => ({ ...f, cpf: formatCPF(e.target.value) }))}
-                  maxLength={14}
-                />
-              </div>
+              <>
+                <div className="form-group">
+                  <label className="form-label" htmlFor="reg-cpf">CPF *</label>
+                  <input
+                    id="reg-cpf"
+                    type="text"
+                    className="form-input"
+                    placeholder="000.000.000-00"
+                    value={registerForm.cpf}
+                    onChange={e => setRegisterForm(f => ({ ...f, cpf: formatCPF(e.target.value) }))}
+                    maxLength={14}
+                  />
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="reg-estado">Estado (UF) *</label>
+                    <select
+                      id="reg-estado"
+                      className="form-select"
+                      value={registerForm.estado}
+                      onChange={e => setRegisterForm(f => ({ ...f, estado: e.target.value }))}
+                    >
+                      <option value="">Selecione</option>
+                      {ESTADOS.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="reg-cidade">Cidade *</label>
+                    <input
+                      id="reg-cidade"
+                      type="text"
+                      className="form-input"
+                      placeholder="Sua cidade base"
+                      value={registerForm.cidade}
+                      onChange={e => setRegisterForm(f => ({ ...f, cidade: e.target.value }))}
+                    />
+                  </div>
+                </div>
+              </>
             )}
 
             <div className="form-group">
