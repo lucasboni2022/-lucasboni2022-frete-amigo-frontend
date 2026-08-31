@@ -25,7 +25,11 @@ function getStatusConfig(status) {
   return STATUS_CONFIG[status] || { label: status || 'Desconhecido', cls: 'badge-inactive' };
 }
 
-function getVipTimerInfo(carga) {
+/**
+ * Calcula quanto tempo falta até o fim do período VIP (3h após a publicação).
+ * Retorna: { isVip: bool, remainingMs: number, label: string }
+ */
+function calcVipTimer(carga) {
   const timeRef = carga.exclusivo_ate || carga.publicado_em || carga.criado_em || carga.created_at;
   if (!timeRef) return null;
 
@@ -33,23 +37,25 @@ function getVipTimerInfo(carga) {
   if (carga.exclusivo_ate) {
     targetTime = new Date(carga.exclusivo_ate).getTime();
   } else {
-    targetTime = new Date(timeRef).getTime() + (3 * 3600 * 1000);
+    targetTime = new Date(timeRef).getTime() + 3 * 3600 * 1000;
   }
 
   const diffMs = targetTime - Date.now();
+
   if (isNaN(diffMs) || diffMs <= 0) {
-    return { isVip: false, label: '🔓 Carga Aberta (Livre)' };
+    return { isVip: false, remainingMs: 0 };
   }
 
   const totalSecs = Math.floor(diffMs / 1000);
-  const hours = Math.floor(totalSecs / 3600);
-  const minutes = Math.floor((totalSecs % 3600) / 60);
-  const seconds = totalSecs % 60;
+  const h = Math.floor(totalSecs / 3600);
+  const m = Math.floor((totalSecs % 3600) / 60);
+  const s = totalSecs % 60;
   const pad = (n) => String(n).padStart(2, '0');
 
   return {
     isVip: true,
-    label: `⚡ Exclusivo Assinantes (${pad(hours)}h:${pad(minutes)}m:${pad(seconds)}s)`,
+    remainingMs: diffMs,
+    hms: `${pad(h)}:${pad(m)}:${pad(s)}`,
   };
 }
 
@@ -67,16 +73,18 @@ export default function CargaCard({ carga }) {
   } = carga;
 
   const statusCfg = getStatusConfig(status);
-  const [timerInfo, setTimerInfo] = useState(() => getVipTimerInfo(carga));
+  const [timerInfo, setTimerInfo] = useState(() => calcVipTimer(carga));
 
   useEffect(() => {
-    setTimerInfo(getVipTimerInfo(carga));
+    // Reinicializar ao trocar de carga
+    const initial = calcVipTimer(carga);
+    setTimerInfo(initial);
+    if (!initial || !initial.isVip) return; // sem timer VIP
+
     const interval = setInterval(() => {
-      const info = getVipTimerInfo(carga);
+      const info = calcVipTimer(carga);
       setTimerInfo(info);
-      if (info && !info.isVip) {
-        clearInterval(interval);
-      }
+      if (!info || !info.isVip) clearInterval(interval);
     }, 1000);
     return () => clearInterval(interval);
   }, [carga]);
@@ -101,21 +109,58 @@ export default function CargaCard({ carga }) {
             {destino_cidade}/{destino_estado}
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
-          {timerInfo && (
+      <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+          {timerInfo?.isVip ? (
+            // Badge VIP com cronômetro pulsante
             <span
-              className={`badge ${timerInfo.isVip ? 'badge-vip' : 'badge-public'}`}
               style={{
-                background: timerInfo.isVip ? '#fef3c7' : '#f3f4f6',
-                color: timerInfo.isVip ? '#b45309' : '#4b5563',
-                border: timerInfo.isVip ? '1px solid #fde68a' : '1px solid #e5e7eb',
-                fontWeight: 600,
-                fontSize: '0.75rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                color: '#92400e',
+                border: '1.5px solid #f59e0b',
+                borderRadius: 8,
+                fontWeight: 700,
+                fontSize: '0.78rem',
+                padding: '4px 10px',
+                letterSpacing: '0.02em',
+                boxShadow: '0 0 0 2px rgba(245,158,11,0.15)',
+                animation: 'vip-pulse 2s ease-in-out infinite',
               }}
             >
-              {timerInfo.label}
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2.5">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span style={{ fontFamily: 'monospace', fontSize: '0.82rem', letterSpacing: '0.08em' }}>
+                {timerInfo.hms}
+              </span>
+              <span style={{ fontSize: '0.7rem', opacity: 0.8 }}>Exclusivo Assinantes</span>
             </span>
-          )}
+          ) : timerInfo && !timerInfo.isVip ? (
+            // Badge liberado para todos
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                background: '#f0fdf4',
+                color: '#166534',
+                border: '1.5px solid #86efac',
+                borderRadius: 8,
+                fontWeight: 600,
+                fontSize: '0.78rem',
+                padding: '4px 10px',
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              Aberta para Todos
+            </span>
+          ) : null}
           <span className={`badge ${statusCfg.cls}`}>{statusCfg.label}</span>
         </div>
       </div>

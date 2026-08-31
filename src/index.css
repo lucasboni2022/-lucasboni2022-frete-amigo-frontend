@@ -1578,3 +1578,32 @@ ul, ol {
 .gap-12 { gap: 12px; }
 .gap-16 { gap: 16px; }
 .flex-1 { flex: 1; }
+
+/* =============================================
+   VIP Timer — Animações
+   ============================================= */
+@keyframes vip-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.15);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.25);
+    opacity: 0.92;
+  }
+}
+
+@keyframes animate-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: animate-fade-in 0.3s ease-out both;
+}

@@ -214,6 +214,53 @@ export default function BuscarCargas() {
           </div>
         )}
 
+        {/* Banner VIP: informa não-assinantes sobre o período exclusivo de 3h */}
+        {isAuthenticated && subStatus && !subStatus.active && (
+          <div style={{
+            background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)',
+            border: '1.5px solid #4f46e5',
+            borderRadius: 'var(--radius-lg)',
+            padding: '16px 20px',
+            marginBottom: 24,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 16,
+            flexWrap: 'wrap',
+          }}>
+            <div style={{ fontSize: '2rem', flexShrink: 0 }}>⏳</div>
+            <div style={{ flex: 1, minWidth: 200 }}>
+              <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#e0e7ff', marginBottom: 4 }}>
+                Cargas VIP — Exclusivas para Assinantes por 3 horas
+              </div>
+              <div style={{ fontSize: '0.84rem', color: '#a5b4fc', lineHeight: 1.5 }}>
+                Motoristas com assinatura ativa acessam as cargas no momento da publicação com um
+                {' '}<strong style={{ color: '#c7d2fe' }}>cronômetro regressivo de 03:00:00</strong>.
+                Após esse período, as cargas ficam visíveis para todos.
+              </div>
+            </div>
+            <a
+              href="https://pay.hotmart.com/E106911485K?bid=1785524650703"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 8,
+                padding: '10px 18px',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(99,102,241,0.4)',
+              }}
+            >
+              🚀 Assinar e Ver Primeiro
+            </a>
+          </div>
+        )}
+
         {/* Results info */}
         {!loading && (
           <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', marginBottom: 20 }}>
