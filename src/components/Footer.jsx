@@ -74,7 +74,14 @@ export default function Footer() {
           <div>
             <h4 className="footer-heading">Suporte</h4>
             <nav className="footer-links">
-              <a href="mailto:contato@freteamigo.com.br" className="footer-link">Fale Conosco</a>
+              <a
+                href="https://wa.me/5565992221821"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="footer-link"
+              >
+                Fale Conosco
+              </a>
               <Link to="/como-funciona" className="footer-link">Dúvidas Frequentes</Link>
               <span className="footer-link" style={{ cursor: 'default' }}>Termos de Uso</span>
               <span className="footer-link" style={{ cursor: 'default' }}>Privacidade</span>
