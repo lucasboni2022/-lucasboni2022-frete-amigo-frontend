@@ -28,7 +28,7 @@ function formatCNPJ(value) {
 }
 
 export default function Auth() {
-  const { login, register, isAuthenticated } = useAuth();
+  const { login, register, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const tabParam = searchParams.get('tab');
@@ -55,8 +55,11 @@ export default function Auth() {
   });
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/dashboard');
-  }, [isAuthenticated, navigate]);
+    if (isAuthenticated) {
+      const destino = user?.tipo_perfil === 'caminhoneiro' ? '/buscar-cargas' : '/dashboard';
+      navigate(destino);
+    }
+  }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
     setError('');
@@ -71,9 +74,11 @@ export default function Auth() {
     }
     setLoading(true);
     try {
-      await login(loginForm.email, loginForm.senha);
+      const data = await login(loginForm.email, loginForm.senha);
       setError('');
-      navigate('/dashboard');
+      const perfil = data?.user?.tipo_perfil || data?.data?.tipo_perfil || data?.tipo_perfil;
+      const destino = perfil === 'caminhoneiro' ? '/buscar-cargas' : '/dashboard';
+      navigate(destino);
     } catch (err) {
       setError(getErrorMessage(err, 'Email ou senha inválidos.'));
     } finally {

@@ -3,16 +3,20 @@
    ============================================= */
 
 :root {
-  --color-primary: #0d1b2a;
-  --color-primary-light: #1a2f45;
-  --color-accent: #00897b;
-  --color-accent-light: #4db6ac;
-  --color-accent-hover: #00695c;
-  --color-bg: #e8eef4;
-  --color-bg-subtle: #f0f4f8;
+  /* === ProdLine Color Palette ===
+     Primary:  hsl(220, 70%, 15%) — azul marinho escuro
+     Accent:   hsl(200, 90%, 55%) — ciano azul vibrante
+  */
+  --color-primary: #0f1e3b;
+  --color-primary-light: #172b4d;
+  --color-accent: #1ab8e8;
+  --color-accent-light: #5ac8f5;
+  --color-accent-hover: #159fc7;
+  --color-bg: #eff3f7;
+  --color-bg-subtle: #f4f7fb;
   --color-card: #ffffff;
   --color-border: #d0dae6;
-  --color-text: #0d1b2a;
+  --color-text: #0f1e3b;
   --color-text-muted: #6b7280;
   --color-text-light: #9ca3af;
   --color-success: #16a34a;
@@ -28,10 +32,10 @@
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
-  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 1px 3px rgba(15, 30, 59, 0.06), 0 1px 2px rgba(15, 30, 59, 0.04);
+  --shadow: 0 4px 12px rgba(15, 30, 59, 0.1), 0 2px 4px rgba(15, 30, 59, 0.05);
+  --shadow-lg: 0 10px 30px rgba(15, 30, 59, 0.13), 0 4px 8px rgba(15, 30, 59, 0.07);
+  --shadow-xl: 0 20px 50px rgba(15, 30, 59, 0.18);
 
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -153,7 +157,7 @@ ul, ol {
   background: var(--color-accent-hover);
   border-color: var(--color-accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(0, 137, 123, 0.35);
+  box-shadow: 0 4px 16px rgba(26, 184, 232, 0.35);
 }
 
 .btn-outline {
@@ -234,7 +238,7 @@ ul, ol {
 .form-select:focus,
 .form-textarea:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.12);
+  box-shadow: 0 0 0 3px rgba(26, 184, 232, 0.15);
 }
 
 .form-input.error,
@@ -292,7 +296,6 @@ ul, ol {
   border-radius: var(--radius-full);
   font-size: 0.75rem;
   font-weight: 600;
-  text-transform: lowercase;
 }
 
 .badge-active {
@@ -409,11 +412,14 @@ ul, ol {
 .navbar-logo-icon {
   width: 36px;
   height: 36px;
-  background: var(--color-primary);
+  background: #ffffff;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .navbar-nav {
@@ -552,7 +558,7 @@ ul, ol {
    Hero Section (Home)
    ============================================= */
 .hero {
-  background: linear-gradient(160deg, #dce8f5 0%, #e8f0f8 40%, #d6e5f2 100%);
+  background: linear-gradient(160deg, hsl(210 50% 92%) 0%, hsl(215 40% 95%) 40%, hsl(205 45% 90%) 100%);
   min-height: calc(100vh - var(--navbar-height));
   display: flex;
   align-items: center;
@@ -568,7 +574,7 @@ ul, ol {
   right: -10%;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(0, 137, 123, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(26, 184, 232, 0.1) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -579,7 +585,7 @@ ul, ol {
   left: -10%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(13, 27, 42, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(15, 30, 59, 0.05) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -594,13 +600,13 @@ ul, ol {
   align-items: center;
   gap: 8px;
   padding: 6px 14px;
-  background: rgba(0, 137, 123, 0.12);
+  background: rgba(26, 184, 232, 0.12);
   border-radius: var(--radius-full);
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--color-accent);
   margin-bottom: 20px;
-  border: 1px solid rgba(0, 137, 123, 0.2);
+  border: 1px solid rgba(26, 184, 232, 0.22);
 }
 
 .hero-title {
@@ -747,13 +753,13 @@ ul, ol {
 .feature-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
-  border-color: rgba(0, 137, 123, 0.25);
+  border-color: rgba(26, 184, 232, 0.3);
 }
 
 .feature-icon {
   width: 52px;
   height: 52px;
-  background: linear-gradient(135deg, rgba(0, 137, 123, 0.12), rgba(0, 137, 123, 0.06));
+  background: linear-gradient(135deg, rgba(26, 184, 232, 0.14), rgba(26, 184, 232, 0.06));
   border-radius: var(--radius);
   display: flex;
   align-items: center;
@@ -792,7 +798,7 @@ ul, ol {
 }
 
 .carga-card:hover {
-  border-color: rgba(0, 137, 123, 0.35);
+  border-color: rgba(26, 184, 232, 0.4);
   box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
 }
@@ -909,12 +915,12 @@ ul, ol {
 
 .plan-card.featured {
   border-color: var(--color-accent);
-  background: linear-gradient(to bottom, #f0fdfb, var(--color-card));
-  box-shadow: 0 8px 32px rgba(0, 137, 123, 0.18);
+  background: linear-gradient(to bottom, #f0f9ff, var(--color-card));
+  box-shadow: 0 8px 32px rgba(26, 184, 232, 0.18);
 }
 
 .plan-card.featured:hover {
-  box-shadow: 0 16px 48px rgba(0, 137, 123, 0.25);
+  box-shadow: 0 16px 48px rgba(26, 184, 232, 0.28);
 }
 
 .plan-badge {
@@ -987,7 +993,7 @@ ul, ol {
 .plan-feature-check {
   width: 18px;
   height: 18px;
-  background: rgba(0, 137, 123, 0.12);
+  background: rgba(26, 184, 232, 0.13);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1007,7 +1013,7 @@ ul, ol {
   justify-content: center;
   min-height: calc(100vh - var(--navbar-height));
   padding: 40px 20px;
-  background: linear-gradient(160deg, #dce8f5 0%, #e8f0f8 60%, #d6e5f2 100%);
+  background: linear-gradient(160deg, hsl(210 50% 92%) 0%, hsl(215 40% 95%) 60%, hsl(205 45% 90%) 100%);
 }
 
 .auth-card {
@@ -1140,7 +1146,7 @@ ul, ol {
    Page Header
    ============================================= */
 .page-header {
-  background: linear-gradient(160deg, #dce8f5 0%, #e8f0f8 100%);
+  background: linear-gradient(160deg, hsl(210 50% 92%) 0%, hsl(215 40% 95%) 100%);
   padding: 48px 0;
   border-bottom: 1px solid var(--color-border);
 }
@@ -1299,7 +1305,7 @@ ul, ol {
   font-size: 1.25rem;
   font-weight: 800;
   margin-bottom: 18px;
-  box-shadow: 0 4px 16px rgba(0, 137, 123, 0.35);
+  box-shadow: 0 4px 16px rgba(26, 184, 232, 0.35);
 }
 
 .step-title {
@@ -1365,24 +1371,34 @@ ul, ol {
 }
 
 .contact-card {
-  background: var(--color-primary);
+  background: var(--color-card);
   border-radius: var(--radius-lg);
-  padding: 28px;
-  color: white;
-  position: sticky;
-  top: calc(var(--navbar-height) + 20px);
+  border: 1.5px solid var(--color-border);
+  padding: 24px;
+  color: var(--color-text);
+  margin-bottom: 20px;
+  transition: all var(--transition);
+}
+
+.contact-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  border-color: #b8c8d8;
 }
 
 .contact-card-title {
-  font-size: 1.0625rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
 }
 
 .contact-card-desc {
-  font-size: 0.875rem;
-  opacity: 0.7;
-  margin-bottom: 20px;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
   line-height: 1.5;
 }
 
@@ -1391,10 +1407,12 @@ ul, ol {
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: rgba(255,255,255,0.08);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius);
   margin-bottom: 10px;
   font-size: 0.9rem;
+  color: var(--color-text);
 }
 
 /* =============================================
@@ -1584,11 +1602,11 @@ ul, ol {
    ============================================= */
 @keyframes vip-pulse {
   0%, 100% {
-    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.15);
+    box-shadow: 0 0 0 2px rgba(26, 184, 232, 0.18);
     opacity: 1;
   }
   50% {
-    box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.25);
+    box-shadow: 0 0 0 5px rgba(26, 184, 232, 0.3);
     opacity: 0.92;
   }
 }

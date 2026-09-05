@@ -48,22 +48,27 @@ export default function Navbar() {
   };
 
   const isEmbarcador = isAuthenticated && user?.tipo_perfil === 'embarcador';
+  const isCaminhoneiro = isAuthenticated && (user?.tipo_perfil === 'caminhoneiro' || user?.tipo_perfil === 'motorista');
 
-  const navLinks = [
-    { to: '/buscar-cargas', label: 'Buscar Cargas' },
-    ...(isEmbarcador ? [
-      { to: '/gerenciar-cargas', label: 'Gerenciar Cargas' },
-      { to: '/publicar-carga', label: 'Publicar Carga' }
-    ] : []),
-    { to: '/como-funciona', label: 'Como Funciona' },
-    { to: '/planos', label: 'Planos' },
-  ];
+  const navLinks = isCaminhoneiro
+    ? [
+        { to: '/buscar-cargas', label: 'Buscar Cargas' }
+      ]
+    : [
+        { to: '/buscar-cargas', label: 'Buscar Cargas' },
+        ...(isEmbarcador ? [
+          { to: '/gerenciar-cargas', label: 'Gerenciar Cargas' },
+          { to: '/publicar-carga', label: 'Publicar Carga' }
+        ] : []),
+        { to: '/como-funciona', label: 'Como Funciona' },
+        { to: '/planos', label: 'Planos' },
+      ];
 
   return (
     <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
       <div className="navbar-inner">
         {/* Logo */}
-        <Link to="/" className="navbar-logo">
+        <Link to={isCaminhoneiro ? '/buscar-cargas' : '/'} className="navbar-logo">
           <div className="navbar-logo-icon">
             <TruckIcon />
           </div>
@@ -100,10 +105,12 @@ export default function Navbar() {
               </div>
               {dropdownOpen && (
                 <div className="dropdown-menu">
-                  <Link to="/dashboard" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                    Dashboard
-                  </Link>
+                  {!isCaminhoneiro && (
+                    <Link to="/dashboard" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                      Dashboard
+                    </Link>
+                  )}
                   {isEmbarcador && (
                     <Link to="/gerenciar-cargas" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
@@ -169,7 +176,9 @@ export default function Navbar() {
           <div style={{ borderTop: '1px solid var(--color-border)', marginTop: '8px', paddingTop: '12px', display: 'flex', gap: '10px' }}>
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="btn btn-outline btn-sm" style={{ flex: 1, textAlign: 'center' }} onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
+                {!isCaminhoneiro && (
+                  <Link to="/dashboard" className="btn btn-outline btn-sm" style={{ flex: 1, textAlign: 'center' }} onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
+                )}
                 <button className="btn btn-outline btn-sm" style={{ flex: 1 }} onClick={() => { handleLogout(); setMobileMenuOpen(false); }}>Sair</button>
               </>
             ) : (

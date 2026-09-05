@@ -1,63 +1,5 @@
 import { Link } from 'react-router-dom';
-
-const PLANS = [
-  {
-    id: 'gratuito',
-    name: 'Gratuito',
-    tagline: 'Comece grátis',
-    amount: '0',
-    period: '/mês',
-    featured: false,
-    badge: null,
-    features: [
-      '3 cargas/mês',
-      'Contato direto',
-      'Suporte por email',
-      'Perfil básico',
-    ],
-    cta: 'Começar',
-    ctaLink: '/auth?tab=cadastrar',
-    ctaStyle: 'btn-outline',
-  },
-  {
-    id: 'profissional',
-    name: 'Profissional',
-    tagline: 'Para embarcadores ativos',
-    amount: '99',
-    period: '/mês',
-    featured: true,
-    badge: 'Mais popular',
-    features: [
-      'Cargas ilimitadas',
-      'Destaque nas buscas',
-      'Estatísticas detalhadas',
-      'Suporte prioritário',
-      'Relatórios mensais',
-    ],
-    cta: 'Assinar agora',
-    ctaLink: '/auth?tab=cadastrar',
-    ctaStyle: 'btn-accent',
-  },
-  {
-    id: 'empresa',
-    name: 'Empresa',
-    tagline: 'Para grandes operações',
-    amount: null,
-    period: '',
-    featured: false,
-    badge: null,
-    features: [
-      'Tudo do Profissional',
-      'Múltiplos usuários',
-      'API de integração',
-      'Gerente de conta',
-      'SLA garantido',
-    ],
-    cta: 'Falar com vendas',
-    ctaLink: 'mailto:vendas@freteamigo.com.br',
-    ctaStyle: 'btn-outline',
-  },
-];
+import { LISTA_PLANOS } from '../utils/planoLimits';
 
 export default function Planos() {
   return (
@@ -70,16 +12,16 @@ export default function Planos() {
       }}>
         <div className="container">
           <span className="section-label">Nossos Planos</span>
-          <h1 className="section-title" style={{ marginTop: 8 }}>Planos para todo perfil</h1>
+          <h1 className="section-title" style={{ marginTop: 8 }}>Planos para Empresas</h1>
           <p className="section-desc">
-            Cadastrar-se e buscar cargas é sempre grátis. Embarcadores escolhem o plano ideal para publicar.
+            Embarcador escolha o plano ideal para o seu negócio
           </p>
         </div>
       </div>
 
       <div className="container" style={{ paddingTop: 56, paddingBottom: 80 }}>
-        <div className="plans-grid">
-          {PLANS.map(plan => (
+        <div className="plans-grid" style={{ maxWidth: 1200, margin: '0 auto', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+          {LISTA_PLANOS.map(plan => (
             <div key={plan.id} className={`plan-card${plan.featured ? ' featured' : ''}`}>
               {plan.badge && (
                 <div className="plan-badge">{plan.badge}</div>
@@ -118,28 +60,7 @@ export default function Planos() {
           ))}
         </div>
 
-        {/* Nota */}
-        <div style={{
-          textAlign: 'center',
-          marginTop: 48,
-          padding: '28px 32px',
-          background: 'white',
-          borderRadius: 'var(--radius-lg)',
-          border: '1.5px solid var(--color-border)',
-          maxWidth: 600,
-          margin: '48px auto 0',
-        }}>
-          <div style={{ fontSize: '1.5rem', marginBottom: 10 }}>🚛</div>
-          <h3 style={{ fontSize: '1.0625rem', fontWeight: 700, color: 'var(--color-primary)', marginBottom: 8 }}>
-            Caminhoneiro? É sempre grátis!
-          </h3>
-          <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', marginBottom: 20 }}>
-            Caminhoneiros têm busca e cadastro 100% gratuitos, sem limite de pesquisas ou contatos.
-          </p>
-          <Link to="/buscar-cargas" className="btn btn-primary">
-            Buscar cargas grátis
-          </Link>
-        </div>
+
 
         {/* FAQ de preços */}
         <div style={{ maxWidth: 640, margin: '56px auto 0' }}>

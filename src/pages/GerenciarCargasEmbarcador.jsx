@@ -5,6 +5,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { ESTADOS } from '../components/SearchBar';
 import CargaCard from '../components/CargaCard';
 import { getErrorMessage } from '../utils/errorHandler';
+import { checkCargasLimit } from '../utils/planoLimits';
+import ModalLimiteExcedido from '../components/ModalLimiteExcedido';
 
 export default function GerenciarCargasEmbarcador() {
   const { user, isAuthenticated } = useAuth();
@@ -15,6 +17,19 @@ export default function GerenciarCargasEmbarcador() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [deletingId, setDeletingId] = useState(null);
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [limitData, setLimitData] = useState(null);
+
+  const handleGoToPublicar = (e) => {
+    e.preventDefault();
+    const check = checkCargasLimit(cargas, user);
+    if (check.excedeu) {
+      setLimitData(check);
+      setShowLimitModal(true);
+    } else {
+      navigate('/publicar-carga');
+    }
+  };
 
   // Filtros de localidade e status
   const [filters, setFilters] = useState({
@@ -125,9 +140,9 @@ export default function GerenciarCargasEmbarcador() {
               <h1 className="page-header-title">Gerenciamento de Cargas</h1>
               <p className="page-header-desc">Painel exclusivo do embarcador para controle e visibilidade por região.</p>
             </div>
-            <Link to="/publicar-carga" className="btn btn-accent btn-lg">
+            <button type="button" onClick={handleGoToPublicar} className="btn btn-accent btn-lg">
               ➕ Publicar Nova Carga
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -271,38 +286,56 @@ export default function GerenciarCargasEmbarcador() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {filteredCargas.map(carga => (
-              <div key={carga.id} style={{ position: 'relative' }}>
-                <CargaCard carga={carga} />
-                <div style={{
-                  display: 'flex',
-                  justify: 'flex-end',
-                  gap: 12,
-                  marginTop: -12,
-                  marginBottom: 12,
-                  paddingRight: 16,
-                  zIndex: 2,
-                  position: 'relative',
-                }}>
-                  <button
-                    className="btn btn-sm btn-outline"
-                    onClick={(e) => { e.preventDefault(); navigate(`/cargas/${carga.id}/editar`); }}
-                  >
-                    ✏️ Editar
-                  </button>
-                  <button
-                    className="btn btn-sm btn-outline"
-                    style={{ color: '#dc2626', borderColor: '#fca5a5' }}
-                    onClick={(e) => { e.preventDefault(); handleDelete(carga.id); }}
-                    disabled={deletingId === carga.id}
-                  >
-                    {deletingId === carga.id ? 'Excluindo...' : '🗑️ Excluir'}
-                  </button>
-                </div>
-              </div>
+              <CargaCard
+                key={carga.id}
+                carga={carga}
+                actions={
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline"
+                      style={{ padding: '6px 12px', fontSize: '0.8125rem' }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        navigate(`/cargas/${carga.id}/editar`);
+                      }}
+                    >
+                      ✏️ Editar
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-sm"
+                      style={{
+                        padding: '6px 12px',
+                        fontSize: '0.8125rem',
+                        background: '#fef2f2',
+                        color: '#dc2626',
+                        border: '1.5px solid #fecaca',
+                        fontWeight: 600,
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDelete(carga.id);
+                      }}
+                      disabled={deletingId === carga.id}
+                    >
+                      {deletingId === carga.id ? 'Excluindo...' : '🗑️ Excluir'}
+                    </button>
+                  </>
+                }
+              />
             ))}
           </div>
         )}
       </div>
+
+      <ModalLimiteExcedido
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        limitData={limitData}
+      />
     </>
   );
 }

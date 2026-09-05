@@ -18,7 +18,7 @@ function formatDate(dateStr) {
 const STATUS_CONFIG = {
   aguardando_motorista: { label: '🟡 Aguardando Motorista', cls: 'badge-pending' },
   contato_liberado:     { label: '🟢 Contato Liberado',     cls: 'badge-active'  },
-  finalizada:           { label: '⚫ Finalizada',            cls: 'badge-inactive'},
+  finalizada:           { label: '⚫ Finalizado',            cls: 'badge-inactive'},
 };
 
 function getStatusConfig(status) {
@@ -59,7 +59,7 @@ function calcVipTimer(carga) {
   };
 }
 
-export default function CargaCard({ carga }) {
+export default function CargaCard({ carga, actions }) {
   const {
     id,
     origem_cidade, origem_estado,
@@ -211,8 +211,19 @@ export default function CargaCard({ carga }) {
           <div className="carga-price-label">VALOR DO FRETE</div>
           <div className="carga-price">{formatCurrency(valor_frete)}</div>
         </div>
-        <div className="carga-link">
-          Ver detalhes →
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+          {actions && (
+            <div
+              className="carga-card-actions"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+            >
+              {actions}
+            </div>
+          )}
+          <div className="carga-link">
+            Ver detalhes →
+          </div>
         </div>
       </div>
     </Link>

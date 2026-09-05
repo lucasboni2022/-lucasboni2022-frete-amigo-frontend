@@ -158,38 +158,30 @@ export default function BuscarCargas() {
           </div>
         </div>
 
-        {/* Hotmart Subscription Status Analysis Banner */}
-        {isAuthenticated && subStatus && (
+        {/* Hotmart Subscription Status Analysis Banner — exibe somente quando assinatura ativa */}
+        {isAuthenticated && subStatus && subStatus.active && (
           <div style={{
-            background: subStatus.active ? '#f0fdf4' : '#fffbeb',
-            border: `1.5px solid ${subStatus.active ? '#bbf7d0' : '#fde68a'}`,
+            background: '#f0fdf4',
+            border: '1.5px solid #bbf7d0',
             borderRadius: 'var(--radius-lg)',
             padding: '16px 20px',
             marginBottom: 24,
             display: 'flex',
             alignItems: 'center',
-            justify: 'space-between',
             flexWrap: 'wrap',
             gap: 12
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ fontSize: '1.5rem' }}>
-                {subStatus.active ? '✅' : '💳'}
-              </div>
+              <div style={{ fontSize: '1.5rem' }}>✅</div>
               <div>
-                <div style={{ fontWeight: 700, fontSize: '0.95rem', color: subStatus.active ? '#166534' : '#92400e' }}>
-                  {subStatus.active
-                    ? `Assinatura Ativa (Hotmart: ${subStatus.status})`
-                    : `Análise de Pagamento Hotmart (${subStatus.status === 'SEM_ASSINATURA' ? 'Nenhuma assinatura encontrada' : subStatus.status})`}
+                <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#166534' }}>
+                  {`Assinatura Ativa (Hotmart: ${subStatus.status})`}
                 </div>
-                <div style={{ fontSize: '0.85rem', color: subStatus.active ? '#15803d' : '#b45309', marginTop: 2 }}>
-                  {subStatus.active
-                    ? 'Seu pagamento foi confirmado via Webhook Hotmart. Acesso liberado aos contatos dos embarcadores!'
-                    : 'Ainda não consta confirmação de pagamento para o e-mail ' + subStatus.email + '. O acesso aos contatos requer plano ativo.'}
+                <div style={{ fontSize: '0.85rem', color: '#15803d', marginTop: 2 }}>
+                  Seu pagamento foi confirmado via Webhook Hotmart. Acesso liberado aos contatos dos embarcadores!
                 </div>
               </div>
             </div>
-
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <button
                 className="btn btn-sm btn-outline"
@@ -199,17 +191,6 @@ export default function BuscarCargas() {
               >
                 {subLoading ? 'Verificando...' : '🔄 Reanalisar'}
               </button>
-              {!subStatus.active && (
-                <a
-                  href="https://pay.hotmart.com/E106911485K?bid=1785524650703"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-sm btn-accent"
-                  style={{ fontSize: '0.8rem', padding: '6px 12px' }}
-                >
-                  🛒 Assinar Agora
-                </a>
-              )}
             </div>
           </div>
         )}
@@ -230,7 +211,7 @@ export default function BuscarCargas() {
             <div style={{ fontSize: '2rem', flexShrink: 0 }}>⏳</div>
             <div style={{ flex: 1, minWidth: 200 }}>
               <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#e0e7ff', marginBottom: 4 }}>
-                Cargas VIP — Exclusivas para Assinantes por 3 horas
+                Cargas VIP
               </div>
               <div style={{ fontSize: '0.84rem', color: '#a5b4fc', lineHeight: 1.5 }}>
                 Motoristas com assinatura ativa acessam as cargas no momento da publicação com um

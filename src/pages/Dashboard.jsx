@@ -4,6 +4,8 @@ import { cargasAPI } from '../api/cargas';
 import { useAuth } from '../contexts/AuthContext';
 import CargaCard from '../components/CargaCard';
 import { getErrorMessage } from '../utils/errorHandler';
+import { checkCargasLimit } from '../utils/planoLimits';
+import ModalLimiteExcedido from '../components/ModalLimiteExcedido';
 
 function getInitials(name) {
   if (!name) return 'U';
@@ -24,6 +26,19 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [limitData, setLimitData] = useState(null);
+
+  const handleGoToPublicar = (e) => {
+    e.preventDefault();
+    const check = checkCargasLimit(cargas, user);
+    if (check.excedeu) {
+      setLimitData(check);
+      setShowLimitModal(true);
+    } else {
+      navigate('/publicar-carga');
+    }
+  };
 
   const fetchMyCargas = async () => {
     setLoading(true);
@@ -90,9 +105,9 @@ export default function Dashboard() {
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
               {user?.tipo_perfil === 'embarcador' && (
-                <Link to="/publicar-carga" className="btn btn-accent">
+                <button type="button" onClick={handleGoToPublicar} className="btn btn-accent">
                   + Publicar Nova Carga
-                </Link>
+                </button>
               )}
               <Link to="/perfil" className="btn" style={{ background: 'rgba(255,255,255,0.12)', color: 'white', border: '1.5px solid rgba(255,255,255,0.25)' }}>
                 Meu Perfil
@@ -108,8 +123,7 @@ export default function Dashboard() {
           {[
             { label: 'Total de Cargas',       value: stats.total,            icon: '📦' },
             { label: 'Aguardando Motorista',   value: stats.aguardando,       icon: '🟡' },
-            { label: 'Contato Liberado',       value: stats.contato_liberado, icon: '🟢' },
-            { label: 'Finalizadas',            value: stats.finalizadas,      icon: '⚫' },
+            { label: 'Finalizado',             value: stats.finalizadas,      icon: '⚫' },
           ].map(s => (
             <div key={s.label} className="stat-card">
               <div className="stat-label">{s.icon} {s.label}</div>
@@ -132,8 +146,7 @@ export default function Dashboard() {
             >
               <option value="">Todos os status</option>
               <option value="aguardando_motorista">🟡 Aguardando Motorista</option>
-              <option value="contato_liberado">🟢 Contato Liberado</option>
-              <option value="finalizada">⚫ Finalizada</option>
+              <option value="finalizada">⚫ Finalizado</option>
             </select>
           </div>
         </div>
@@ -154,46 +167,53 @@ export default function Dashboard() {
             <p className="empty-desc">
               Publique sua primeira carga e encontre caminhoneiros em todo o Brasil!
             </p>
-            <Link to="/publicar-carga" className="btn btn-accent btn-lg">
-              Publicar primeira carga
-            </Link>
+            {user?.tipo_perfil !== 'caminhoneiro' && (
+              <button type="button" onClick={handleGoToPublicar} className="btn btn-accent btn-lg">
+                Publicar primeira carga
+              </button>
+            )}
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               {cargas.map((carga) => (
-              <div key={carga.id} style={{ position: 'relative' }}>
-                <CargaCard carga={carga} />
-                {/* Ações disponíveis apenas se carga ainda está aguardando motorista */}
-                {carga.status === 'aguardando_motorista' && (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: 20,
-                    right: 24,
-                    display: 'flex',
-                    gap: 8,
-                  }}>
-                    <Link
-                      to={`/cargas/${carga.id}/editar`}
+              <CargaCard
+                key={carga.id}
+                carga={carga}
+                actions={carga.status === 'aguardando_motorista' ? (
+                  <>
+                    <button
+                      type="button"
                       className="btn btn-sm btn-outline"
                       style={{ fontSize: '0.8125rem', padding: '5px 12px' }}
-                      onClick={e => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        navigate(`/cargas/${carga.id}/editar`);
+                      }}
                     >
                       ✏️ Editar
-                    </Link>
+                    </button>
                     <button
+                      type="button"
                       className="btn btn-sm"
                       style={{ fontSize: '0.8125rem', padding: '5px 12px', background: '#fef2f2', color: 'var(--color-error)', border: '1.5px solid #fecaca' }}
                       onClick={(e) => handleDelete(carga.id, e)}
                     >
-                      🗑️
+                      🗑️ Excluir
                     </button>
-                  </div>
-                )}
-              </div>
+                  </>
+                ) : null}
+              />
             ))}
           </div>
         )}
       </div>
+
+      <ModalLimiteExcedido
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        limitData={limitData}
+      />
     </>
   );
 }

@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Footer() {
+  const { isAuthenticated, user } = useAuth();
   const year = new Date().getFullYear();
+  const isCaminhoneiro = isAuthenticated && (user?.tipo_perfil === 'caminhoneiro' || user?.tipo_perfil === 'motorista');
 
   return (
     <footer className="footer">
       <div className="container">
-        <div className="footer-grid">
+        <div className="footer-grid" style={isCaminhoneiro ? { gridTemplateColumns: '2fr 1fr 1fr' } : {}}>
           {/* Brand */}
           <div className="footer-brand">
             <div className="footer-logo">
@@ -55,15 +58,17 @@ export default function Footer() {
           </div>
 
           {/* Para Embarcadores */}
-          <div>
-            <h4 className="footer-heading">Embarcadores</h4>
-            <nav className="footer-links">
-              <Link to="/publicar-carga" className="footer-link">Publicar Carga</Link>
-              <Link to="/planos" className="footer-link">Nossos Planos</Link>
-              <Link to="/como-funciona" className="footer-link">Como Funciona</Link>
-              <Link to="/auth?tab=cadastrar" className="footer-link">Criar Conta</Link>
-            </nav>
-          </div>
+          {!isCaminhoneiro && (
+            <div>
+              <h4 className="footer-heading">Embarcadores</h4>
+              <nav className="footer-links">
+                <Link to="/publicar-carga" className="footer-link">Publicar Carga</Link>
+                <Link to="/planos" className="footer-link">Nossos Planos</Link>
+                <Link to="/como-funciona" className="footer-link">Como Funciona</Link>
+                <Link to="/auth?tab=cadastrar" className="footer-link">Criar Conta</Link>
+              </nav>
+            </div>
+          )}
 
           {/* Suporte */}
           <div>

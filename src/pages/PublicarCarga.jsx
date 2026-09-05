@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { cargasAPI } from '../api/cargas';
+import { useAuth } from '../contexts/AuthContext';
 import { ESTADOS, VEICULOS } from '../components/SearchBar';
 import { getErrorMessage } from '../utils/errorHandler';
+import { checkCargasLimit } from '../utils/planoLimits';
+import ModalLimiteExcedido from '../components/ModalLimiteExcedido';
 
 const TIPOS_CARGA = [
   'Eletrônicos', 'Alimentos', 'Bebidas', 'Madeira', 'Construção',
@@ -17,6 +20,7 @@ const TIPOS_CARROCERIA = [
 export default function PublicarCarga() {
   const { id } = useParams(); // edição
   const navigate = useNavigate();
+  const { user } = useAuth();
   const isEdit = !!id;
 
   const [form, setForm] = useState({
@@ -31,6 +35,7 @@ export default function PublicarCarga() {
     tipo_veiculo: '',
     tipo_carroceria: '',
     observacoes: '',
+    status: 'aguardando_motorista',
   });
 
   const [loading, setLoading] = useState(false);
@@ -38,6 +43,27 @@ export default function PublicarCarga() {
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
   const [apiError, setApiError] = useState('');
+
+  // Controle de limite de cargas por plano
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [limitData, setLimitData] = useState(null);
+
+  // Verificação inicial do limite de cargas (para novas publicações)
+  useEffect(() => {
+    if (isEdit) return;
+    const checkInitialLimit = async () => {
+      try {
+        const res = await cargasAPI.myCargas();
+        const data = res.data;
+        const list = Array.isArray(data) ? data : (data.cargas || data.data || data.items || []);
+        const check = checkCargasLimit(list, user);
+        setLimitData(check);
+      } catch (err) {
+        console.warn('Erro ao verificar limite inicial:', err);
+      }
+    };
+    checkInitialLimit();
+  }, [isEdit, user]);
 
   // Carregar carga para edição
   useEffect(() => {
@@ -58,6 +84,7 @@ export default function PublicarCarga() {
           tipo_veiculo: data.tipo_veiculo || '',
           tipo_carroceria: data.tipo_carroceria || '',
           observacoes: data.observacoes || '',
+          status: data.status || 'aguardando_motorista',
         });
       } catch {
         setApiError('Não foi possível carregar os dados da carga.');
@@ -93,6 +120,25 @@ export default function PublicarCarga() {
 
     setLoading(true);
     setApiError('');
+
+    // Se for criação de nova carga, valida o limite dos últimos 30 dias pelo plano
+    if (!isEdit) {
+      try {
+        const res = await cargasAPI.myCargas();
+        const data = res.data;
+        const list = Array.isArray(data) ? data : (data.cargas || data.data || data.items || []);
+        const check = checkCargasLimit(list, user);
+        if (check.excedeu) {
+          setLimitData(check);
+          setShowLimitModal(true);
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.warn('Erro ao validar limite de publicações:', err);
+      }
+    }
+
     try {
       const payload = {
         ...form,
@@ -133,6 +179,20 @@ export default function PublicarCarga() {
       </div>
 
       <div className="container" style={{ paddingTop: 40, paddingBottom: 64, maxWidth: 740 }}>
+        {limitData && limitData.excedeu && !isEdit && (
+          <div className="alert alert-error" style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+            <div>
+              <strong>⚠️ Quantidade de cargas excedida para o plano atual ({limitData.planoInfo?.name})</strong>
+              <div style={{ fontSize: '0.875rem', marginTop: 4 }}>
+                Você já utilizou {limitData.totalUsado} de {limitData.limite} cargas permitidas nos últimos 30 dias. Aguarde {limitData.diasRestantes} {limitData.diasRestantes === 1 ? 'dia' : 'dias'} ou faça um upgrade do plano.
+              </div>
+            </div>
+            <Link to="/planos" className="btn btn-sm btn-accent" style={{ textDecoration: 'none' }}>
+              Fazer Upgrade
+            </Link>
+          </div>
+        )}
+
         {success && (
           <div className="alert alert-success" style={{ marginBottom: 24 }}>
             ✅ Carga {isEdit ? 'atualizada' : 'publicada'} com sucesso! Redirecionando...
@@ -288,7 +348,7 @@ export default function PublicarCarga() {
             </div>
           </div>
 
-          <div className="form-group" style={{ marginBottom: 28 }}>
+          <div className="form-group" style={{ marginBottom: 24 }}>
             <label className="form-label">Observações</label>
             <textarea
               className="form-textarea"
@@ -298,6 +358,29 @@ export default function PublicarCarga() {
               rows={4}
             />
           </div>
+
+          {isEdit && (
+            <>
+              <hr className="divider" />
+              <h3 style={{ fontSize: '0.8125rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--color-text-muted)', marginBottom: 18 }}>
+                Status da Carga
+              </h3>
+              <div className="form-group" style={{ marginBottom: 28, maxWidth: 360 }}>
+                <label className="form-label">Status Atual</label>
+                <select
+                  className="form-select"
+                  value={form.status || 'aguardando_motorista'}
+                  onChange={e => handleChange('status', e.target.value)}
+                >
+                  <option value="aguardando_motorista">🟡 Aguardando Motorista</option>
+                  <option value="finalizada">⚫ Finalizado</option>
+                </select>
+                <span style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', marginTop: 4, display: 'block' }}>
+                  Altere o status para controlar a visibilidade e o andamento do frete.
+                </span>
+              </div>
+            </>
+          )}
 
           <div style={{ display: 'flex', gap: 12 }}>
             <button type="submit" className="btn btn-accent btn-lg" disabled={loading}>
@@ -313,6 +396,12 @@ export default function PublicarCarga() {
           </div>
         </form>
       </div>
+
+      <ModalLimiteExcedido
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        limitData={limitData}
+      />
     </>
   );
 }
