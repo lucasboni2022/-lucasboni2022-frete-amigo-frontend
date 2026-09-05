@@ -56,7 +56,7 @@ export default function Home() {
               Embarcadores publicam cargas gratuitamente. Caminhoneiros encontram fretes para suas rotas de forma rápida e segura.
             </p>
             <div className="hero-ctas">
-              <Link to="/auth?tab=cadastrar" className="btn btn-primary btn-lg">
+              <Link to="/auth?tab=cadastrar&perfil=caminhoneiro" className="btn btn-primary btn-lg">
                 Sou caminhoneiro
               </Link>
               <Link to="/publicar-carga" className="btn btn-accent btn-lg">

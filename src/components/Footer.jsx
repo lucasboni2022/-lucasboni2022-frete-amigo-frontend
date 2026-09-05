@@ -52,7 +52,7 @@ export default function Footer() {
             <nav className="footer-links">
               <Link to="/buscar-cargas" className="footer-link">Buscar Cargas</Link>
               <Link to="/como-funciona" className="footer-link">Como Funciona</Link>
-              <Link to="/auth?tab=cadastrar" className="footer-link">Cadastrar Grátis</Link>
+              <Link to="/auth?tab=cadastrar&perfil=caminhoneiro" className="footer-link">Cadastrar Grátis</Link>
               <Link to="/planos" className="footer-link">Planos</Link>
             </nav>
           </div>
@@ -65,7 +65,7 @@ export default function Footer() {
                 <Link to="/publicar-carga" className="footer-link">Publicar Carga</Link>
                 <Link to="/planos" className="footer-link">Nossos Planos</Link>
                 <Link to="/como-funciona" className="footer-link">Como Funciona</Link>
-                <Link to="/auth?tab=cadastrar" className="footer-link">Criar Conta</Link>
+                <Link to="/auth?tab=cadastrar&perfil=embarcador" className="footer-link">Criar Conta</Link>
               </nav>
             </div>
           )}

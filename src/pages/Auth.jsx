@@ -32,6 +32,7 @@ export default function Auth() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const tabParam = searchParams.get('tab');
+  const perfilParam = searchParams.get('perfil') || searchParams.get('tipo');
 
   const [tab, setTab] = useState(tabParam === 'cadastrar' ? 'cadastrar' : 'entrar');
   const [loading, setLoading] = useState(false);
@@ -43,7 +44,7 @@ export default function Auth() {
 
   // Register form
   const [registerForm, setRegisterForm] = useState({
-    tipo_perfil: 'embarcador',
+    tipo_perfil: (perfilParam === 'caminhoneiro' || perfilParam === 'motorista') ? 'caminhoneiro' : 'embarcador',
     nome_completo: '',
     email: '',
     telefone: '',
@@ -53,6 +54,23 @@ export default function Auth() {
     estado: '',
     cidade: '',
   });
+
+  useEffect(() => {
+    if (tabParam === 'cadastrar') {
+      setTab('cadastrar');
+    } else if (tabParam === 'entrar') {
+      setTab('entrar');
+    }
+  }, [tabParam]);
+
+  useEffect(() => {
+    const perfil = searchParams.get('perfil') || searchParams.get('tipo');
+    if (perfil === 'caminhoneiro' || perfil === 'motorista') {
+      setRegisterForm(f => ({ ...f, tipo_perfil: 'caminhoneiro' }));
+    } else if (perfil === 'embarcador') {
+      setRegisterForm(f => ({ ...f, tipo_perfil: 'embarcador' }));
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (isAuthenticated) {

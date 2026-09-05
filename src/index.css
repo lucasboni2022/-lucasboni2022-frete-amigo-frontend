@@ -619,7 +619,7 @@ ul, ol {
 }
 
 .hero-title span {
-  color: var(--color-accent);
+  color: inherit;
   position: relative;
 }
 
