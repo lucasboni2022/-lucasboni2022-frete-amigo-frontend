@@ -1,7 +1,33 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { LISTA_PLANOS } from '../utils/planoLimits';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Planos() {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const handlePlanClick = (plan) => {
+    if (plan.hotmartLink) {
+      if (isAuthenticated) {
+        window.location.href = plan.hotmartLink;
+      } else {
+        navigate(plan.ctaLink || '/auth?tab=cadastrar');
+      }
+      return;
+    }
+
+    if (plan.ctaLink?.startsWith('mailto')) {
+      window.location.href = plan.ctaLink;
+      return;
+    }
+
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    } else {
+      navigate(plan.ctaLink || '/auth?tab=cadastrar');
+    }
+  };
+
   return (
     <>
       <div style={{
@@ -22,7 +48,12 @@ export default function Planos() {
       <div className="container" style={{ paddingTop: 56, paddingBottom: 80 }}>
         <div className="plans-grid" style={{ maxWidth: 1200, margin: '0 auto', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
           {LISTA_PLANOS.map(plan => (
-            <div key={plan.id} className={`plan-card${plan.featured ? ' featured' : ''}`}>
+            <div
+              key={plan.id}
+              className={`plan-card${plan.featured ? ' featured' : ''}`}
+              onClick={() => handlePlanClick(plan)}
+              style={{ cursor: 'pointer' }}
+            >
               {plan.badge && (
                 <div className="plan-badge">{plan.badge}</div>
               )}
@@ -47,13 +78,45 @@ export default function Planos() {
                   </li>
                 ))}
               </ul>
-              {plan.ctaLink.startsWith('mailto') ? (
-                <a href={plan.ctaLink} className={`btn ${plan.ctaStyle} btn-full btn-lg`}>
+              {plan.hotmartLink && isAuthenticated ? (
+                <a
+                  href={plan.hotmartLink}
+                  className={`btn ${plan.ctaStyle} btn-full btn-lg`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  {plan.cta}
+                </a>
+              ) : plan.hotmartLink && !isAuthenticated ? (
+                <Link
+                  to={plan.ctaLink || '/auth?tab=cadastrar'}
+                  className={`btn ${plan.ctaStyle} btn-full btn-lg`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  {plan.cta}
+                </Link>
+              ) : plan.ctaLink?.startsWith('mailto') ? (
+                <a
+                  href={plan.ctaLink}
+                  className={`btn ${plan.ctaStyle} btn-full btn-lg`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   {plan.cta}
                 </a>
               ) : (
-                <Link to={plan.ctaLink} className={`btn ${plan.ctaStyle} btn-full btn-lg`}>
-                  {plan.cta}
+                <Link
+                  to={isAuthenticated ? '/dashboard' : (plan.ctaLink || '/auth?tab=cadastrar')}
+                  className={`btn ${plan.ctaStyle} btn-full btn-lg`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  {isAuthenticated ? 'Ir para o Painel' : plan.cta}
                 </Link>
               )}
             </div>

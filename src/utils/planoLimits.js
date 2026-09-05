@@ -38,6 +38,7 @@ export const PLANOS = {
     ],
     cta: 'Assinar Profissional',
     ctaLink: '/auth?tab=cadastrar',
+    hotmartLink: 'https://pay.hotmart.com/E106911485K?off=xfq51yak&bid=1788632923925',
     ctaStyle: 'btn-primary',
   },
   premio: {
@@ -59,6 +60,7 @@ export const PLANOS = {
     ],
     cta: 'Assinar Prêmio',
     ctaLink: '/auth?tab=cadastrar',
+    hotmartLink: 'https://pay.hotmart.com/E106911485K?off=lzx7dwmd',
     ctaStyle: 'btn-accent',
   },
   ouro: {
@@ -80,6 +82,7 @@ export const PLANOS = {
     ],
     cta: 'Assinar Ouro',
     ctaLink: '/auth?tab=cadastrar',
+    hotmartLink: 'https://pay.hotmart.com/E106911485K?off=5txj0hcf',
     ctaStyle: 'btn-primary',
   },
 };
