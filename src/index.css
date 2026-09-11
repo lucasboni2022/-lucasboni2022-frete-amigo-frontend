@@ -36,6 +36,10 @@
   --shadow: 0 4px 12px rgba(15, 30, 59, 0.1), 0 2px 4px rgba(15, 30, 59, 0.05);
   --shadow-lg: 0 10px 30px rgba(15, 30, 59, 0.13), 0 4px 8px rgba(15, 30, 59, 0.07);
   --shadow-xl: 0 20px 50px rgba(15, 30, 59, 0.18);
+  --shadow-glow: 0 0 30px hsl(200 90% 55% / 0.3);
+
+  --gradient-primary: linear-gradient(135deg, hsl(220 70% 15%), hsl(220 65% 35%));
+  --gradient-primary-hover: linear-gradient(135deg, hsl(220 70% 20%), hsl(220 65% 42%));
 
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -135,29 +139,41 @@ ul, ol {
 }
 
 .btn-primary {
-  background: var(--color-primary);
+  background: var(--gradient-primary);
   color: #ffffff;
-  border-color: var(--color-primary);
+  border: 1.5px solid transparent;
+  box-shadow: var(--shadow-glow);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--color-primary-light);
-  border-color: var(--color-primary-light);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow);
+  background: var(--gradient-primary-hover);
+  opacity: 0.92;
+  transform: translateY(-2px);
+  box-shadow: 0 0 35px hsl(200 90% 55% / 0.45), var(--shadow-lg);
+}
+
+.btn-primary:active:not(:disabled) {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .btn-accent {
-  background: var(--color-accent);
+  background: var(--gradient-primary);
   color: #ffffff;
-  border-color: var(--color-accent);
+  border: 1.5px solid transparent;
+  box-shadow: var(--shadow-glow);
 }
 
 .btn-accent:hover:not(:disabled) {
-  background: var(--color-accent-hover);
-  border-color: var(--color-accent-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(26, 184, 232, 0.35);
+  background: var(--gradient-primary-hover);
+  opacity: 0.92;
+  transform: translateY(-2px);
+  box-shadow: 0 0 35px hsl(200 90% 55% / 0.45), var(--shadow-lg);
+}
+
+.btn-accent:active:not(:disabled) {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .btn-outline {
@@ -1637,26 +1653,27 @@ ul, ol {
   gap: 10px;
   width: 100%;
   padding: 13px 20px;
-  background: linear-gradient(135deg, var(--color-accent) 0%, #0ea5e9 100%);
+  background: var(--gradient-primary);
   color: #ffffff;
   font-size: 1rem;
   font-weight: 700;
   border-radius: var(--radius);
-  border: none;
+  border: 1.5px solid transparent;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(26, 184, 232, 0.35);
+  box-shadow: var(--shadow-glow);
   transition: all var(--transition);
 }
 
 .btn-iniciar-conversa:hover {
-  background: linear-gradient(135deg, var(--color-accent-hover) 0%, #0284c7 100%);
+  background: var(--gradient-primary-hover);
+  opacity: 0.92;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(26, 184, 232, 0.48);
+  box-shadow: 0 0 35px hsl(200 90% 55% / 0.45), var(--shadow-lg);
 }
 
 .btn-iniciar-conversa:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(26, 184, 232, 0.3);
+  opacity: 1;
 }
 
 /* Navbar Badges */
@@ -2040,17 +2057,19 @@ ul, ol {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--color-primary);
+  background: var(--gradient-primary);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: var(--shadow-glow);
   transition: all var(--transition);
 }
 
 .chat-widget-send-btn:hover:not(:disabled) {
-  background: var(--color-accent);
+  background: var(--gradient-primary-hover);
+  opacity: 0.92;
   transform: scale(1.05);
 }
 
