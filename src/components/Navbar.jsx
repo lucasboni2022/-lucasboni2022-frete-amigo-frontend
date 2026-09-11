@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { chatService } from '../services/chatService';
 
 const TruckIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -17,7 +18,21 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    if (!user) {
+      setUnreadCount(0);
+      return;
+    }
+    const updateUnread = () => {
+      setUnreadCount(chatService.getUnreadCount(user.id));
+    };
+    updateUnread();
+    const unsubscribe = chatService.subscribe(updateUnread);
+    return () => unsubscribe();
+  }, [user]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -52,7 +67,8 @@ export default function Navbar() {
 
   const navLinks = isCaminhoneiro
     ? [
-        { to: '/buscar-cargas', label: 'Buscar Cargas' }
+        { to: '/buscar-cargas', label: 'Buscar Cargas' },
+        ...(isAuthenticated ? [{ to: '/mensagens', label: 'Mensagens', badge: unreadCount }] : []),
       ]
     : [
         { to: '/buscar-cargas', label: 'Buscar Cargas' },
@@ -60,6 +76,7 @@ export default function Navbar() {
           { to: '/gerenciar-cargas', label: 'Gerenciar Cargas' },
           { to: '/publicar-carga', label: 'Publicar Carga' }
         ] : []),
+        ...(isAuthenticated ? [{ to: '/mensagens', label: 'Mensagens', badge: unreadCount }] : []),
         { to: '/como-funciona', label: 'Como Funciona' },
         { to: '/planos', label: 'Planos' },
       ];
@@ -82,8 +99,12 @@ export default function Navbar() {
               key={link.to}
               to={link.to}
               className={({ isActive }) => `navbar-link${isActive ? ' active' : ''}`}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
             >
               {link.label}
+              {link.badge > 0 && (
+                <span className="navbar-unread-badge">{link.badge}</span>
+              )}
             </NavLink>
           ))}
         </div>
@@ -117,6 +138,13 @@ export default function Navbar() {
                       Gerenciar Cargas
                     </Link>
                   )}
+                  <Link to="/mensagens" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Mensagens
+                    {unreadCount > 0 && (
+                      <span className="navbar-unread-badge" style={{ marginLeft: 'auto' }}>{unreadCount}</span>
+                    )}
+                  </Link>
                   <Link to="/perfil" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     Meu Perfil
@@ -168,9 +196,12 @@ export default function Navbar() {
               to={link.to}
               className={({ isActive }) => `navbar-link${isActive ? ' active' : ''}`}
               onClick={() => setMobileMenuOpen(false)}
-              style={{ display: 'block' }}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
             >
-              {link.label}
+              <span>{link.label}</span>
+              {link.badge > 0 && (
+                <span className="navbar-unread-badge">{link.badge}</span>
+              )}
             </NavLink>
           ))}
           <div style={{ borderTop: '1px solid var(--color-border)', marginTop: '8px', paddingTop: '12px', display: 'flex', gap: '10px' }}>

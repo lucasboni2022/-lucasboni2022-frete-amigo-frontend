@@ -298,6 +298,19 @@ export default function GerenciarCargasEmbarcador() {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
+                        navigate('/mensagens');
+                      }}
+                      title="Ver conversas de motoristas"
+                    >
+                      💬 Conversas
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline"
+                      style={{ padding: '6px 12px', fontSize: '0.8125rem' }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         navigate(`/cargas/${carga.id}/editar`);
                       }}
                     >

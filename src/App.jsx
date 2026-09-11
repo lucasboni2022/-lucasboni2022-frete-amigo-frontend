@@ -17,6 +17,7 @@ import Perfil from './pages/Perfil';
 import EsqueciSenha from './pages/EsqueciSenha';
 import RedefinirSenha from './pages/RedefinirSenha';
 import GerenciarCargasEmbarcador from './pages/GerenciarCargasEmbarcador';
+import Mensagens from './pages/Mensagens';
 
 function Layout({ children }) {
   return (
@@ -105,6 +106,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Layout><GerenciarCargasEmbarcador /></Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mensagens"
+            element={
+              <ProtectedRoute>
+                <Layout><Mensagens /></Layout>
               </ProtectedRoute>
             }
           />
