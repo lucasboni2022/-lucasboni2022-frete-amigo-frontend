@@ -246,7 +246,7 @@ export default function GerenciarCargasEmbarcador() {
               >
                 <option value="TODAS">Todas as Fases</option>
                 <option value="VIP_3H">⚡ Exclusiva Assinantes (0-3h)</option>
-                <option value="PUBLICAS">🔓 Pública (> 3h)</option>
+                <option value="PUBLICAS">🔓 Pública (&gt; 3h)</option>
                 <option value="FINALIZADAS">⚫ Finalizadas</option>
               </select>
             </div>
@@ -306,7 +306,7 @@ export default function GerenciarCargasEmbarcador() {
                     </button>
                     <button
                       type="button"
-                      className="btn btn-sm btn-outline"
+                      className="btn btn-sm btn-primary"
                       style={{ padding: '6px 12px', fontSize: '0.8125rem' }}
                       onClick={(e) => {
                         e.preventDefault();
@@ -318,15 +318,8 @@ export default function GerenciarCargasEmbarcador() {
                     </button>
                     <button
                       type="button"
-                      className="btn btn-sm"
-                      style={{
-                        padding: '6px 12px',
-                        fontSize: '0.8125rem',
-                        background: '#fef2f2',
-                        color: '#dc2626',
-                        border: '1.5px solid #fecaca',
-                        fontWeight: 600,
-                      }}
+                      className="btn btn-sm btn-primary"
+                      style={{ padding: '6px 12px', fontSize: '0.8125rem' }}
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();

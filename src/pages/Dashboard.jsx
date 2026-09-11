@@ -183,7 +183,7 @@ export default function Dashboard() {
                   <>
                     <button
                       type="button"
-                      className="btn btn-sm btn-outline"
+                      className="btn btn-sm btn-primary"
                       style={{ fontSize: '0.8125rem', padding: '5px 12px' }}
                       onClick={(e) => {
                         e.preventDefault();
@@ -195,8 +195,8 @@ export default function Dashboard() {
                     </button>
                     <button
                       type="button"
-                      className="btn btn-sm"
-                      style={{ fontSize: '0.8125rem', padding: '5px 12px', background: '#fef2f2', color: 'var(--color-error)', border: '1.5px solid #fecaca' }}
+                      className="btn btn-sm btn-primary"
+                      style={{ fontSize: '0.8125rem', padding: '5px 12px' }}
                       onClick={(e) => handleDelete(carga.id, e)}
                     >
                       🗑️ Excluir

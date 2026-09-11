@@ -119,8 +119,8 @@ export default function CargaDetalhe() {
             </div>
             {isOwner && (
               <div style={{ display: 'flex', gap: 10 }}>
-                <Link to={`/cargas/${id}/editar`} className="btn btn-outline btn-sm">✏️ Editar</Link>
-                <button className="btn btn-sm" style={{ background: '#fef2f2', color: 'var(--color-error)', border: '1.5px solid #fecaca' }} onClick={handleDelete} disabled={deleting}>
+                <Link to={`/cargas/${id}/editar`} className="btn btn-primary btn-sm">✏️ Editar</Link>
+                <button className="btn btn-primary btn-sm" onClick={handleDelete} disabled={deleting}>
                   {deleting ? '...' : '🗑️ Excluir'}
                 </button>
               </div>
